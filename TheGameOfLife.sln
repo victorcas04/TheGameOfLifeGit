@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28307.102
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "TheGameOfLife", "TheGameOfLife\TheGameOfLife.vcxproj", "{F5F8BB58-E9FA-4287-BADE-601B37B52560}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|x64 = Debug|x64
+		Debug|x86 = Debug|x86
+		Release|x64 = Release|x64
+		Release|x86 = Release|x86
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F5F8BB58-E9FA-4287-BADE-601B37B52560}.Debug|x64.ActiveCfg = Debug|x64
+		{F5F8BB58-E9FA-4287-BADE-601B37B52560}.Debug|x64.Build.0 = Debug|x64
+		{F5F8BB58-E9FA-4287-BADE-601B37B52560}.Debug|x86.ActiveCfg = Debug|Win32
+		{F5F8BB58-E9FA-4287-BADE-601B37B52560}.Debug|x86.Build.0 = Debug|Win32
+		{F5F8BB58-E9FA-4287-BADE-601B37B52560}.Release|x64.ActiveCfg = Release|x64
+		{F5F8BB58-E9FA-4287-BADE-601B37B52560}.Release|x64.Build.0 = Release|x64
+		{F5F8BB58-E9FA-4287-BADE-601B37B52560}.Release|x86.ActiveCfg = Release|Win32
+		{F5F8BB58-E9FA-4287-BADE-601B37B52560}.Release|x86.Build.0 = Release|Win32
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {148B878A-0091-4DF4-9CF5-06971006A93C}
+	EndGlobalSection
+EndGlobal

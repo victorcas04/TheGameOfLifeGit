@@ -1,0 +1,60 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Source Files">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="Header Files">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="Resource Files">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="Source Files\Game">
+      <UniqueIdentifier>{a904fce4-2d95-485a-9333-16b58badda2c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Board">
+      <UniqueIdentifier>{8ad34905-68a3-43e5-9ec1-1d7987b12283}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Source Files\Player">
+      <UniqueIdentifier>{049d03f6-48b6-4a18-81fd-1918f95cfda6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Game">
+      <UniqueIdentifier>{972eb3d9-9af6-4fa7-9a83-3754b1b19772}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Board">
+      <UniqueIdentifier>{91d01f95-52b6-4f97-aa8f-028adacffc24}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Player">
+      <UniqueIdentifier>{876e930c-fd31-4993-a91f-c01ce6aa91ee}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\Game\TheGameOfLife.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Board\Board.cpp">
+      <Filter>Source Files\Board</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Player\Player.cpp">
+      <Filter>Source Files\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Game\GameManager.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\Board\Board.h">
+      <Filter>Header Files\Board</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Player\Player.h">
+      <Filter>Header Files\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Game\GameManager.h">
+      <Filter>Header Files\Game</Filter>
+    </ClInclude>
+  </ItemGroup>
+</Project>

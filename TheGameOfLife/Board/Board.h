@@ -12,6 +12,7 @@ public:
 	~CBoard() {}
 
 	void Update(float dTime);
+	void Draw();
 
 	int GetSize();
 	CPlayer* GetPlayerOnPos(int pos);
@@ -22,6 +23,8 @@ protected:
 	void RemovePlayer(CPlayer* pj);
 
 private:
-	int mMaxSize = 16;
 	std::list<CPlayer*> mBoard;
+
+	// TODO: public inputeable
+	int mMaxSize = 16;
 };

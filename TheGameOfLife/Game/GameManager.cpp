@@ -12,7 +12,18 @@ CGameManager::CGameManager()
 
 void CGameManager::Update(float dTime)
 {
-	mBoard->Update(dTime);
+	mInnerTimer += dTime;
+	if (mInnerTimer >= mTimeBetweenSteps)
+	{
+		mInnerTimer = 0.0f;
+		mBoard->Update(dTime);
+	}
+}
+
+void CGameManager::Draw()
+{
+	// TODO: optimization if not updated (?)
+	mBoard->Draw();
 }
 
 bool CGameManager::GetIsGameOver()

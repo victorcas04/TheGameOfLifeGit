@@ -33,6 +33,12 @@ void CBoard::Update(float dTime)
 	
 }
 
+void CBoard::Draw()
+{
+	// TODO
+	// print board state
+}
+
 int CBoard::GetSize()
 {
 	return mMaxSize;

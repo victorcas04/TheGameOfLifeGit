@@ -65,7 +65,7 @@ void _logic()
 
 void _render()
 {
-
+	gameManager->Draw();
 }
 
 void _shutdown()

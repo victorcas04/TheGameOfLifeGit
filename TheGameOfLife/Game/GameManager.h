@@ -13,7 +13,8 @@ public:
 	}
 
 	void Update(float dTime);
-	
+	void Draw();
+
 	bool GetIsGameOver();
 
 
@@ -28,5 +29,10 @@ private:
 	CBoard* mBoard;
 
 	bool bIsGameOver = false;
+
+	float mTimeBetweenSteps = 1.0f;
+
+	// TODO: public inputeable
+	float mInnerTimer = 0.0f;
 };
 

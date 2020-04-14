@@ -15,6 +15,7 @@ public:
 	void Draw();
 
 	int GetSize();
+	void SetSize(int size);
 	CPlayer* GetPlayerOnPos(int pos);
 	int GetNumPlayersNearby(int pos);
 

@@ -8,26 +8,34 @@ CBoard::CBoard()
 	std::cout << "Board created!\n";
 }
 
+/// RULES
+
 void CBoard::Update(float dTime)
 {
 	for(int pos = 0; pos < mMaxSize; ++pos)
 	{
 		CPlayer* playerOnPos = GetPlayerOnPos(pos);
+		// any dead cell...
 		if (!playerOnPos)
 		{
-			if (GetNumPlayersNearby(pos) < 2)
+			// ...with exactly three live neighbours becomes a live cell
+			if (GetNumPlayersNearby(pos) == 3)
 			{
 				CPlayer* newPlayer = new CPlayer(pos);
 				// TODO
 				// add newPlayer to board
 			}
 		}
+		// any live cell...
 		else
 		{
-			if (GetNumPlayersNearby(pos) > 3)
+			// ...with more than three live neighbours dies
+			// ...with fewer than two live neighbours dies
+			if (GetNumPlayersNearby(pos) > 3 || GetNumPlayersNearby(pos) < 2)
 			{
 				RemovePlayer(GetPlayerOnPos(pos));
 			}
+			// ...with two or three live neighbours lives
 		}
 	}
 	
@@ -42,6 +50,11 @@ void CBoard::Draw()
 int CBoard::GetSize()
 {
 	return mMaxSize;
+}
+
+void CBoard::SetSize(int size)
+{
+	mMaxSize = size;
 }
 
 CPlayer * CBoard::GetPlayerOnPos(int pos)

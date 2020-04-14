@@ -1,7 +1,7 @@
 /**
  * @author Víctor de Castro Hurtado
  * @description Game based on the concept The Game Of Life from John Horton Conway
- * @link https://en.wikipedia.org/wiki/Conway's_Game_of_Life
+ * @link https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
  */
 
 #include <iostream>
@@ -40,12 +40,13 @@ void _init()
 
 void _update()
 {
-	while (gameManager->GetIsGameOver())
+	while (!gameManager->GetIsGameOver())
 	{
 		deltaTime = postFrame - preFrame;
 		preFrame = postFrame;
 
-		_input();
+		// no need for user input since it's a 0 player game
+		//_input();
 		_logic();
 		_render();
 

@@ -12,6 +12,9 @@ public:
 		return (!m_instanceGameManager) ? m_instanceGameManager = new CGameManager() : m_instanceGameManager;
 	}
 
+	void Init();
+	void CreateBoard();
+
 	void Update(float dTime);
 	void Draw();
 
@@ -30,9 +33,10 @@ private:
 
 	bool bIsGameOver = false;
 
-	float mTimeBetweenSteps = 1.0f;
-
-	// TODO: public inputeable
+	float mTimeBetweenSteps;
 	float mInnerTimer = 0.0f;
+
+	int mRows;
+	int mColumns;
 };
 

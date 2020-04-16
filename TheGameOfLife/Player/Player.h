@@ -1,16 +1,21 @@
 #pragma once
 
 #include <iostream>
+#include "../Other/Vec2D.h"
 
 class CPlayer
 {
 public:
-	CPlayer(int pos);
+	CPlayer(CVec2D* newPos);
 	~CPlayer() {}
+
+	void Update(float dTime);
+	void Draw();
+
+	CVec2D* GetPos();
 
 protected:
 
 private:
-	int mPos = 0;
-
+	CVec2D* mPos;
 };

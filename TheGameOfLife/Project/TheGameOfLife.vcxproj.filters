@@ -31,6 +31,12 @@
     <Filter Include="Header Files\Player">
       <UniqueIdentifier>{876e930c-fd31-4993-a91f-c01ce6aa91ee}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Source Files\Other">
+      <UniqueIdentifier>{0a89e401-73fe-45e0-adb2-760070d17280}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Other">
+      <UniqueIdentifier>{8658ac15-be29-4ae1-819f-9c29632b9803}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Game\TheGameOfLife.cpp">
@@ -45,6 +51,9 @@
     <ClCompile Include="..\Game\GameManager.cpp">
       <Filter>Source Files\Game</Filter>
     </ClCompile>
+    <ClCompile Include="..\Other\Vec2D.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Board\Board.h">
@@ -55,6 +64,9 @@
     </ClInclude>
     <ClInclude Include="..\Game\GameManager.h">
       <Filter>Header Files\Game</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Other\Vec2D.h">
+      <Filter>Header Files\Other</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

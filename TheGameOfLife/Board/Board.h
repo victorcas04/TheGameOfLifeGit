@@ -3,29 +3,40 @@
 #include <iostream>
 #include <list>
 
+#include "../Other/Vec2D.h"
+
 class CPlayer;
 
 class CBoard
 {
 public:
-	CBoard();
+	CBoard(int rows, int columns);
 	~CBoard() {}
+
+	// TODO: remove this
+	void _demoInit();
 
 	void Update(float dTime);
 	void Draw();
 
 	int GetSize();
-	void SetSize(int size);
-	CPlayer* GetPlayerOnPos(int pos);
-	int GetNumPlayersNearby(int pos);
+	void AddPlayerToPos(CVec2D* pos);
+	void RemovePlayerFromPos(CVec2D* pos);
+	void RemovePlayer(CPlayer* pj);
+	CPlayer* GetPlayerOnPos(CVec2D* pos);
+	int GetNumPlayersNearbyPos(CVec2D* pos);
+	int GetNumPlayersNearbyPlayer(CPlayer* pj);
 
 protected:
-	void AddPlayer(int pos);
-	void RemovePlayer(CPlayer* pj);
+	void _addPlayerToPos(CPlayer* newPlayer, int pos);
+	void _removePlayerFromPos(int pos);
+
+	CPlayer* _getPlayerOnPos(int pos);
+	int _getNumPlayersNearby(int pos);
 
 private:
 	std::list<CPlayer*> mBoard;
 
-	// TODO: public inputeable
-	int mMaxSize = 16;
+	int mRows;
+	int mCols;
 };

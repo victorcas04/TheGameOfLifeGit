@@ -27,16 +27,24 @@ private:
 	CGameManager();
 	~CGameManager() {}
 
-	static CGameManager* m_instanceGameManager;
+	// TODO: remove this
+	void _demoInit();
 
 	CBoard* mBoard;
 
 	bool bIsGameOver = false;
+	bool bMustDraw = true;
+
+	// TODO: add limits to input
+	int mMaxIterations;
+	int mInnerIterations = 0;
 
 	float mTimeBetweenSteps;
 	float mInnerTimer = 0.0f;
 
 	int mRows;
 	int mColumns;
+
+	static CGameManager* m_instanceGameManager;
 };
 

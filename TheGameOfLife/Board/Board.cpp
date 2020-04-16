@@ -3,82 +3,159 @@
 
 #include "../Player/Player.h"
 
-CBoard::CBoard()
+CBoard::CBoard(int rows, int columns)
 {
 	std::cout << "Board created!\n";
+	mRows = rows;
+	mCols = columns;
+
+	_demoInit();
 }
 
-/// RULES
+void CBoard::_demoInit()
+{
+	for (int i = 0; i < mRows; ++i)
+	{
+		for (int j = 0; j < mCols; ++j)
+		{
+			AddPlayerToPos(new CVec2D(i, j));
+		}
+	}
+}
+
+// RULES
+
+// any dead cell...
+//// ...with exactly three live neighbours becomes a live cell
+// any live cell...
+//// ...with more than three live neighbours dies
+//// ...with fewer than two live neighbours dies
+//// ...with two or three live neighbours lives
 
 void CBoard::Update(float dTime)
 {
-	for(int pos = 0; pos < mMaxSize; ++pos)
+	// TODO: remove this
+	/*
+	for(int pos = 0; pos < GetSize(); ++pos)
 	{
-		CPlayer* playerOnPos = GetPlayerOnPos(pos);
-		// any dead cell...
+		CPlayer* playerOnPos = _getPlayerOnPos(pos);
+		
 		if (!playerOnPos)
 		{
-			// ...with exactly three live neighbours becomes a live cell
-			if (GetNumPlayersNearby(pos) == 3)
+			
+			if (_getNumPlayersNearby(pos) == 3)
 			{
-				CPlayer* newPlayer = new CPlayer(pos);
-				// TODO
-				// add newPlayer to board
+				_addPlayerToPos(new CPlayer(CVec2D::PosToPos2D(pos, mCols)), pos);
 			}
 		}
-		// any live cell...
+		
 		else
 		{
-			// ...with more than three live neighbours dies
-			// ...with fewer than two live neighbours dies
-			if (GetNumPlayersNearby(pos) > 3 || GetNumPlayersNearby(pos) < 2)
+			
+			if (_getNumPlayersNearby(pos) > 3 || _getNumPlayersNearby(pos) < 2)
 			{
-				RemovePlayer(GetPlayerOnPos(pos));
+				RemovePlayer(playerOnPos);
 			}
-			// ...with two or three live neighbours lives
+			
 		}
 	}
-	
+	*/
+	for (int pos = 0; pos < GetSize(); ++pos)
+	{
+		if (_getNumPlayersNearby(pos) == 3)
+		{
+			AddPlayerToPos(CVec2D::PosToPos2D(pos, mCols));
+		}
+		else if (_getNumPlayersNearby(pos) > 3 || _getNumPlayersNearby(pos) < 2)
+		{
+			RemovePlayerFromPos(CVec2D::PosToPos2D(pos, mCols));
+		}
+	}
 }
 
 void CBoard::Draw()
 {
 	// TODO
-	// print board state
+	int i = 0;
+	for (std::list<CPlayer*>::iterator it = mBoard.begin(); it != mBoard.end(); ++it)
+	{
+		std::cout << "pos: " << i << " - pjPos: " << (*it)->GetPos()->ToString() << "\n";
+		++i;
+	}
 }
 
 int CBoard::GetSize()
 {
-	return mMaxSize;
+	return mRows * mCols;
 }
 
-void CBoard::SetSize(int size)
+void CBoard::AddPlayerToPos(CVec2D * pos)
 {
-	mMaxSize = size;
+	if (!GetPlayerOnPos(pos))
+	{
+		_addPlayerToPos(new CPlayer(pos), CVec2D::Pos2DToPos(pos, mCols));
+	}
 }
 
-CPlayer * CBoard::GetPlayerOnPos(int pos)
+void CBoard::RemovePlayerFromPos(CVec2D * pos)
 {
 	// TODO
+	if (GetPlayerOnPos(pos))
+	{
+		// _removePlayerFromPos(pos);
+	}
+}
+
+
+void CBoard::RemovePlayer(CPlayer * pj)
+{
+	// TODO
+	// RemovePlayerFromPos(pj.GetPos());
+}
+
+CPlayer * CBoard::GetPlayerOnPos(CVec2D * pos)
+{
+	// TODO
+	// return _getPlayerOnPos(pos);
 	return nullptr;
 }
 
-int CBoard::GetNumPlayersNearby(int pos)
+int CBoard::GetNumPlayersNearbyPos(CVec2D * pos)
 {
 	// TODO
 	return 0;
 }
 
-void CBoard::AddPlayer(int pos)
+int CBoard::GetNumPlayersNearbyPlayer(CPlayer* pj)
 {
 	// TODO
-	// new pj
-	// add pj to pos in list
+	return 0;
 }
 
-void CBoard::RemovePlayer(CPlayer * pj)
+void CBoard::_addPlayerToPos(CPlayer* newPlayer, int pos)
 {
 	// TODO
-	// remove pj from list
-	// ~pj
+	std::list<CPlayer*>::iterator it = mBoard.begin();
+	for (int i = 0; i < pos; ++i)
+	{
+		++it;
+	}
+	mBoard.insert(it, newPlayer);
+}
+
+void CBoard::_removePlayerFromPos(int pos)
+{
+	// TODO
+}
+
+CPlayer * CBoard::_getPlayerOnPos(int pos)
+{
+	// TODO
+	return nullptr;
+}
+
+int CBoard::_getNumPlayersNearby(int pos)
+{
+	// TODO
+	return 0;
 }

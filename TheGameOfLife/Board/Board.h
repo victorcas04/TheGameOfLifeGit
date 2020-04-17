@@ -8,19 +8,19 @@
 class CPlayer;
 class CCell;
 
-// TODO
-// need to update info from last board state, not current
-
 class CBoard
 {
 public:
 	CBoard(int rows, int columns);
 	~CBoard() {}
 
+	void AddInitPlayers(std::list<CVec2D*> listInitPos);
+
 	void Update(float dTime);
 	void Draw();
 
 	int GetSize();
+	int GetPopulation();
 	void AddPlayerToPos(CVec2D* pos);
 	void RemovePlayerFromPos(CVec2D* pos);
 	CPlayer* GetPlayerOnPos(CVec2D* pos);
@@ -41,6 +41,7 @@ protected:
 
 private:
 	std::list<CCell*> mBoard;
+	int mPopulation;
 
 	int mRows;
 	int mCols;

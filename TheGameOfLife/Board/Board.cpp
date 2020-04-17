@@ -4,9 +4,12 @@
 
 CBoard::CBoard(int rows, int columns)
 {
+#ifdef DEBUGINFO
 	std::cout << "Board created!\n";
+#endif
 	mRows = rows;
 	mCols = columns;
+	mPopulation = 0;
 	_initBoard();
 }
 
@@ -21,6 +24,15 @@ void CBoard::_initBoard()
 	}
 }
 
+void CBoard::AddInitPlayers(std::list<CVec2D*> listInitPos)
+{
+	for (std::list<CVec2D*>::iterator it = listInitPos.begin(); it != listInitPos.end(); ++it)
+	{
+		AddPlayerToPos((*it));
+		_getCellOnPos(CVec2D::Pos2DToPos((*it), mCols))->SetIsInitPos();
+	}
+}
+
 // RULES
 
 // any dead cell...
@@ -32,6 +44,10 @@ void CBoard::_initBoard()
 
 void CBoard::Update(float dTime)
 {
+	for (int pos = 0; pos < GetSize(); ++pos)
+	{
+		_getCellOnPos(pos)->Update(dTime);
+	}
 	for (int pos = 0; pos < GetSize(); ++pos)
 	{
 		int numPjNearby = _getNumPlayersNearby(pos);
@@ -59,12 +75,21 @@ void CBoard::Draw()
 	for (std::list<CCell*>::iterator it = mBoard.begin(); it != mBoard.end(); ++it)
 	{
 		(*it)->Draw();
+		if ((*it)->GetPos()->GetY() == (mCols - 1))
+		{
+			std::cout << "\n";
+		}
 	}
 }
 
 int CBoard::GetSize()
 {
 	return mRows * mCols;
+}
+
+int CBoard::GetPopulation()
+{
+	return mPopulation;
 }
 
 void CBoard::AddPlayerToPos(CVec2D * pos)
@@ -88,7 +113,7 @@ int CBoard::GetNumPlayersNearbyPos(CVec2D * pos)
 	int pjNearby = 0;
 	for (std::list<CCell*>::iterator it = cellsNearby.begin(); it != cellsNearby.end(); ++it)
 	{
-		if (!(*it)->IsEmpty())
+		if (!(*it)->WasEmptyLastUpdate())
 		{
 			++pjNearby;
 		}
@@ -137,11 +162,13 @@ bool CBoard::_isPosInsideBoard(CVec2D* pos)
 void CBoard::_addPlayerToPos(int pos)
 {
 	_getCellOnPos(pos)->AddPlayerToCell();
+	++mPopulation;
 }
 
 void CBoard::_removePlayerFromPos(int pos)
 {
 	_getCellOnPos(pos)->RemovePlayerFromCell();
+	--mPopulation;
 }
 
 CPlayer * CBoard::_getPlayerOnPos(int pos)

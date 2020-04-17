@@ -15,6 +15,7 @@ public:
 
 	void Init();
 	void CreateBoard();
+	void FillBoard();
 
 	void Update(float dTime);
 	void Draw();

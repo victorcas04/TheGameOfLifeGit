@@ -16,6 +16,8 @@ public:
 
 	CVec2D* GetPos();
 
+	void SetIsInitPos(bool isInitPos = true);
+	bool WasEmptyLastUpdate();
 	bool IsEmpty();
 	CPlayer* GetPlayerFromCell();
 	void AddPlayerToCell();
@@ -26,4 +28,6 @@ protected:
 private:
 	CPlayer* mPj;
 	CVec2D* mPos;
+
+	bool mWasEmptyLastUpdate;
 };

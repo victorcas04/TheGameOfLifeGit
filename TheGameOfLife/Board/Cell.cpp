@@ -5,19 +5,20 @@
 CCell::CCell(CVec2D* newPos)
 {
 	mPos = newPos;
+	mWasEmptyLastUpdate = true;
 }
 
 void CCell::Update(float dTime)
 {
 	//
+	mWasEmptyLastUpdate = IsEmpty();
+	mPj->Update(dTime);
 }
 
 void CCell::Draw()
 {
 	// TODO
-	std::cout << mPos->ToString();
-	std::cout << (IsEmpty() ? " empty" : " player");
-	std::cout << "\n";
+	std::cout << (IsEmpty() ? " E" : " P");
 }
 
 CVec2D * CCell::GetPos()
@@ -28,6 +29,16 @@ CVec2D * CCell::GetPos()
 CPlayer* CCell::GetPlayerFromCell()
 {
 	return mPj;
+}
+
+void CCell::SetIsInitPos(bool isInitPos)
+{
+	mWasEmptyLastUpdate = !isInitPos;
+}
+
+bool CCell::WasEmptyLastUpdate()
+{
+	return mWasEmptyLastUpdate;
 }
 
 bool CCell::IsEmpty()

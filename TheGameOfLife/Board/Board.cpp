@@ -1,24 +1,22 @@
 
 #include "Board.h"
-
-#include "../Player/Player.h"
+#include "Cell.h"
 
 CBoard::CBoard(int rows, int columns)
 {
 	std::cout << "Board created!\n";
 	mRows = rows;
 	mCols = columns;
-
-	_demoInit();
+	_initBoard();
 }
 
-void CBoard::_demoInit()
+void CBoard::_initBoard()
 {
 	for (int i = 0; i < mRows; ++i)
 	{
 		for (int j = 0; j < mCols; ++j)
 		{
-			AddPlayerToPos(new CVec2D(i, j));
+			mBoard.push_back(new CCell(new CVec2D(i, j)));
 		}
 	}
 }
@@ -34,53 +32,33 @@ void CBoard::_demoInit()
 
 void CBoard::Update(float dTime)
 {
-	// TODO: remove this
-	/*
-	for(int pos = 0; pos < GetSize(); ++pos)
-	{
-		CPlayer* playerOnPos = _getPlayerOnPos(pos);
-		
-		if (!playerOnPos)
-		{
-			
-			if (_getNumPlayersNearby(pos) == 3)
-			{
-				_addPlayerToPos(new CPlayer(CVec2D::PosToPos2D(pos, mCols)), pos);
-			}
-		}
-		
-		else
-		{
-			
-			if (_getNumPlayersNearby(pos) > 3 || _getNumPlayersNearby(pos) < 2)
-			{
-				RemovePlayer(playerOnPos);
-			}
-			
-		}
-	}
-	*/
 	for (int pos = 0; pos < GetSize(); ++pos)
 	{
-		if (_getNumPlayersNearby(pos) == 3)
+		int numPjNearby = _getNumPlayersNearby(pos);
+		if (numPjNearby == 3)
 		{
-			AddPlayerToPos(CVec2D::PosToPos2D(pos, mCols));
+			// no need to check this here, but reduces operations when no needed
+			if (_getCellOnPos(pos)->IsEmpty())
+			{
+				AddPlayerToPos(CVec2D::PosToPos2D(pos, mCols));
+			}
 		}
-		else if (_getNumPlayersNearby(pos) > 3 || _getNumPlayersNearby(pos) < 2)
+		else if (numPjNearby > 3 || numPjNearby < 2)
 		{
-			RemovePlayerFromPos(CVec2D::PosToPos2D(pos, mCols));
+			// no need to check this here, but reduces operations when no needed
+			if (!_getCellOnPos(pos)->IsEmpty())
+			{
+				RemovePlayerFromPos(CVec2D::PosToPos2D(pos, mCols));
+			}
 		}
 	}
 }
 
 void CBoard::Draw()
 {
-	// TODO
-	int i = 0;
-	for (std::list<CPlayer*>::iterator it = mBoard.begin(); it != mBoard.end(); ++it)
+	for (std::list<CCell*>::iterator it = mBoard.begin(); it != mBoard.end(); ++it)
 	{
-		std::cout << "pos: " << i << " - pjPos: " << (*it)->GetPos()->ToString() << "\n";
-		++i;
+		(*it)->Draw();
 	}
 }
 
@@ -91,71 +69,87 @@ int CBoard::GetSize()
 
 void CBoard::AddPlayerToPos(CVec2D * pos)
 {
-	if (!GetPlayerOnPos(pos))
-	{
-		_addPlayerToPos(new CPlayer(pos), CVec2D::Pos2DToPos(pos, mCols));
-	}
+	_addPlayerToPos(CVec2D::Pos2DToPos(pos, mCols));
 }
 
 void CBoard::RemovePlayerFromPos(CVec2D * pos)
 {
-	// TODO
-	if (GetPlayerOnPos(pos))
-	{
-		// _removePlayerFromPos(pos);
-	}
-}
-
-
-void CBoard::RemovePlayer(CPlayer * pj)
-{
-	// TODO
-	// RemovePlayerFromPos(pj.GetPos());
+	_removePlayerFromPos(CVec2D::Pos2DToPos(pos, mCols));
 }
 
 CPlayer * CBoard::GetPlayerOnPos(CVec2D * pos)
 {
-	// TODO
-	// return _getPlayerOnPos(pos);
-	return nullptr;
+	return _getPlayerOnPos(CVec2D::Pos2DToPos(pos, mCols));
 }
 
 int CBoard::GetNumPlayersNearbyPos(CVec2D * pos)
 {
-	// TODO
-	return 0;
+	std::list<CCell*> cellsNearby = _getCellsNearby(pos);
+	int pjNearby = 0;
+	for (std::list<CCell*>::iterator it = cellsNearby.begin(); it != cellsNearby.end(); ++it)
+	{
+		if (!(*it)->IsEmpty())
+		{
+			++pjNearby;
+		}
+	}
+	return pjNearby;
 }
 
-int CBoard::GetNumPlayersNearbyPlayer(CPlayer* pj)
+std::list<CCell*> CBoard::_getCellsNearby(CVec2D * pos)
 {
-	// TODO
-	return 0;
+	std::list<CCell*> listCellsNearby;
+	for (int i = -1; i <= 1; ++i)
+	{
+		for (int j = -1; j <= 1; ++j)
+		{
+			if (i != 0 || j != 0)
+			{
+				CVec2D* nearbyPos = new CVec2D(i + pos->GetX(), j + pos->GetY());
+				if (_isPosInsideBoard(nearbyPos))
+				{
+					listCellsNearby.push_back(_getCellOnPos(CVec2D::Pos2DToPos(nearbyPos, mCols)));
+				}
+			}
+		}
+	}
+	return listCellsNearby;
 }
 
-void CBoard::_addPlayerToPos(CPlayer* newPlayer, int pos)
+CCell* CBoard::_getCellOnPos(int pos)
 {
-	// TODO
-	std::list<CPlayer*>::iterator it = mBoard.begin();
+	std::list<CCell*>::iterator it = mBoard.begin();
 	for (int i = 0; i < pos; ++i)
 	{
 		++it;
 	}
-	mBoard.insert(it, newPlayer);
+	return (*it);
+}
+
+bool CBoard::_isPosInsideBoard(CVec2D* pos)
+{
+	return (pos->GetX() < mRows 
+		&& pos->GetX() >= 0 
+		&& pos->GetY() < mCols 
+		&& pos->GetY() >= 0);
+}
+
+void CBoard::_addPlayerToPos(int pos)
+{
+	_getCellOnPos(pos)->AddPlayerToCell();
 }
 
 void CBoard::_removePlayerFromPos(int pos)
 {
-	// TODO
+	_getCellOnPos(pos)->RemovePlayerFromCell();
 }
 
 CPlayer * CBoard::_getPlayerOnPos(int pos)
 {
-	// TODO
-	return nullptr;
+	return _getCellOnPos(pos)->GetPlayerFromCell();
 }
 
 int CBoard::_getNumPlayersNearby(int pos)
 {
-	// TODO
-	return 0;
+	return GetNumPlayersNearbyPos(CVec2D::PosToPos2D(pos, mCols));
 }

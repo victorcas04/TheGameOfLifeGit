@@ -152,6 +152,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="..\Board\Board.cpp" />
+    <ClCompile Include="..\Board\Cell.cpp" />
     <ClCompile Include="..\Game\GameManager.cpp" />
     <ClCompile Include="..\Game\TheGameOfLife.cpp" />
     <ClCompile Include="..\Other\Vec2D.cpp" />
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Board\Board.h" />
+    <ClInclude Include="..\Board\Cell.h" />
     <ClInclude Include="..\Game\GameManager.h" />
     <ClInclude Include="..\Other\Vec2D.h" />
     <ClInclude Include="..\Player\Player.h" />

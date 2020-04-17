@@ -4,37 +4,39 @@
 
 CGameManager* CGameManager::m_instanceGameManager = nullptr;
 
+#define TEST
+#define DRAW
+
 CGameManager::CGameManager()
 {
 	std::cout << "GameManager created!\n";
 	Init();
 	CreateBoard();
 
-	_demoInit();
+#ifdef TEST
+	_testInit();
+#endif
 }
 
 void CGameManager::Init()
 {
 	// TODO
 	// user input
-	mRows = 8;
-	mColumns = 10;
-	mMaxIterations = 1;
-	mTimeBetweenSteps = 1.0f;
+	mRows = 4;
+	mColumns = 4;
+	mMaxIterations = 3;
+	mTimeBetweenSteps = 4.0f;
 	// time needs to be in ms
 	mTimeBetweenSteps *= 1000;
 }
 
-void CGameManager::_demoInit()
+void CGameManager::_testInit()
 {
-	CVec2D* test2D = new CVec2D(7, 9);
-	int test2Dint = CVec2D::Pos2DToPos(test2D, mColumns);
-	std::cout << "test2d: " << test2D->ToString() << " - test2dint: " << test2Dint << "\n";
-	
-
-	int test = 79;
-	CVec2D* testto2D = CVec2D::PosToPos2D(test, mColumns);
-	std::cout << "test: " << test << " - testto2d: " << testto2D->ToString() << "\n";
+	//CVec2D::Test(mColumns);
+	mBoard->AddPlayerToPos(new CVec2D(0, 1));
+	mBoard->AddPlayerToPos(new CVec2D(1, 0));
+	mBoard->AddPlayerToPos(new CVec2D(1, 1));
+	mBoard->AddPlayerToPos(new CVec2D(1, 2));
 }
 
 void CGameManager::CreateBoard()
@@ -63,12 +65,16 @@ void CGameManager::Update(float dTime)
 
 void CGameManager::Draw()
 {
+#ifdef DRAW
 	if (bMustDraw)
 	{
+		// clear screen before each draw
+		system("CLS");
 		std::cout << "----- Drawing iteration " << mInnerIterations << "\t-----\n";
 		bMustDraw = false;
 		mBoard->Draw();
 	}
+#endif
 }
 
 bool CGameManager::GetIsGameOver()

@@ -54,6 +54,9 @@
     <ClCompile Include="..\Other\Vec2D.cpp">
       <Filter>Source Files\Other</Filter>
     </ClCompile>
+    <ClCompile Include="..\Board\Cell.cpp">
+      <Filter>Source Files\Board</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Board\Board.h">
@@ -67,6 +70,9 @@
     </ClInclude>
     <ClInclude Include="..\Other\Vec2D.h">
       <Filter>Header Files\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Board\Cell.h">
+      <Filter>Header Files\Board</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

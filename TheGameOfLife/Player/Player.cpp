@@ -1,23 +1,22 @@
 
 #include "Player.h"
 
-CPlayer::CPlayer(CVec2D* newPos)
+CPlayer::CPlayer()
 {
 	std::cout << "Player created!\n";
-	mPos = newPos;
+}
+
+CPlayer::~CPlayer()
+{
+	std::cout << "Player deleted!\n";
 }
 
 void CPlayer::Update(float dTime)
 {
-	// TODO
+	//
 }
 
 void CPlayer::Draw()
 {
 	// TODO
-}
-
-CVec2D * CPlayer::GetPos()
-{
-	return mPos;
 }

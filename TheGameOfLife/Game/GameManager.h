@@ -1,5 +1,6 @@
 #pragma once
 
+#include <stdlib.h>
 #include <iostream>
 
 class CBoard;
@@ -27,8 +28,7 @@ private:
 	CGameManager();
 	~CGameManager() {}
 
-	// TODO: remove this
-	void _demoInit();
+	void _testInit();
 
 	CBoard* mBoard;
 

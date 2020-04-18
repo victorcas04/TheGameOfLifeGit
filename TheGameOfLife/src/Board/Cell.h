@@ -20,8 +20,8 @@ public:
 	bool WasEmptyLastUpdate();
 	bool IsEmpty();
 	CPlayer* GetPlayerFromCell();
-	void AddPlayerToCell();
-	void RemovePlayerFromCell();	
+	bool AddPlayerToCell(bool playerCanDie = true);
+	bool RemovePlayerFromCell();	
 
 protected:
 

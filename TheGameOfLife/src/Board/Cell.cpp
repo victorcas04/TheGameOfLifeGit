@@ -10,16 +10,13 @@ CCell::CCell(CVec2D* newPos)
 
 void CCell::Update(float dTime)
 {
-	//
 	mWasEmptyLastUpdate = IsEmpty();
 	mPj->Update(dTime);
 }
 
 void CCell::Draw()
 {
-	// TODO
-
-	std::cout << (IsEmpty() ? " E" : " P");
+	std::cout << (IsEmpty() ? " +" : (mPj->GetCanBeKilled() ? " O" : " @"));
 }
 
 CVec2D * CCell::GetPos()
@@ -47,19 +44,23 @@ bool CCell::IsEmpty()
 	return mPj == nullptr;
 }
 
-void CCell::AddPlayerToCell()
+bool CCell::AddPlayerToCell(bool playerCanDie)
 {
 	if (!mPj)
 	{
-		mPj = new CPlayer();
+		mPj = new CPlayer(playerCanDie);
+		return true;
 	}
+	return false;
 }
 
-void CCell::RemovePlayerFromCell()
+bool CCell::RemovePlayerFromCell()
 {
-	if (mPj)
+	if (mPj && mPj->GetCanBeKilled())
 	{
 		mPj->~CPlayer();
 		mPj = nullptr;
+		return true;
 	}
+	return false;
 }

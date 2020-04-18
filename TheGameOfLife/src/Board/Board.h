@@ -14,15 +14,16 @@ public:
 	CBoard(int rows, int columns);
 	~CBoard() {}
 
-	void AddInitPlayers(std::list<CVec2D*> listInitPos);
+	void AddInitPlayers(std::list<CVec2D*> listInitPosNormal, std::list<CVec2D*> listInitPosInmortal);
 
 	void Update(float dTime);
 	void Draw();
 
 	int GetSize();
 	int GetPopulation();
-	void AddPlayerToPos(CVec2D* pos);
-	void RemovePlayerFromPos(CVec2D* pos);
+	bool IsStabilized();
+	bool AddPlayerToPos(CVec2D* pos, bool playerCanDie = true);
+	bool RemovePlayerFromPos(CVec2D* pos);
 	CPlayer* GetPlayerOnPos(CVec2D* pos);
 	int GetNumPlayersNearbyPos(CVec2D* pos);
 
@@ -31,8 +32,8 @@ protected:
 
 	CCell* _getCellOnPos(int pos);
 	CPlayer* _getPlayerOnPos(int pos);
-	void _addPlayerToPos(int pos);
-	void _removePlayerFromPos(int pos);
+	bool _addPlayerToPos(int pos, bool playerCanDie = true);
+	bool _removePlayerFromPos(int pos);
 
 	std::list<CCell*> _getCellsNearby(CVec2D * pos);
 	int _getNumPlayersNearby(int pos);
@@ -42,6 +43,7 @@ protected:
 private:
 	std::list<CCell*> mBoard;
 	int mPopulation;
+	bool bIsStabilized;
 
 	int mRows;
 	int mCols;

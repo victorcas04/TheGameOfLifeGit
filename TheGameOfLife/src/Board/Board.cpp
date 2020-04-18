@@ -5,7 +5,7 @@
 CBoard::CBoard(int rows, int columns)
 {
 #ifdef DEBUGINFO
-	std::cout << "Board created!\n";
+	std::cout << "Creating board...\n";
 #endif
 	mRows = rows;
 	mCols = columns;
@@ -24,12 +24,15 @@ void CBoard::_initBoard()
 	}
 }
 
-void CBoard::AddInitPlayers(std::list<CVec2D*> listInitPos)
+void CBoard::AddInitPlayers(std::list<CVec2D*> listInitPosNormal, std::list<CVec2D*> listInitPosInmortal)
 {
-	for (std::list<CVec2D*>::iterator it = listInitPos.begin(); it != listInitPos.end(); ++it)
+	for (std::list<CVec2D*>::iterator it = listInitPosNormal.begin(); it != listInitPosNormal.end(); ++it)
 	{
-		AddPlayerToPos((*it));
-		_getCellOnPos(CVec2D::Pos2DToPos((*it), mCols))->SetIsInitPos();
+		if (AddPlayerToPos((*it))) { _getCellOnPos(CVec2D::Pos2DToPos((*it), mCols))->SetIsInitPos(); }
+	}
+	for (std::list<CVec2D*>::iterator it = listInitPosInmortal.begin(); it != listInitPosInmortal.end(); ++it)
+	{
+		if (AddPlayerToPos((*it), false)) { _getCellOnPos(CVec2D::Pos2DToPos((*it), mCols))->SetIsInitPos(); }
 	}
 }
 
@@ -48,6 +51,7 @@ void CBoard::Update(float dTime)
 	{
 		_getCellOnPos(pos)->Update(dTime);
 	}
+	bIsStabilized = true;
 	for (int pos = 0; pos < GetSize(); ++pos)
 	{
 		int numPjNearby = _getNumPlayersNearby(pos);
@@ -56,7 +60,7 @@ void CBoard::Update(float dTime)
 			// no need to check this here, but reduces operations when no needed
 			if (_getCellOnPos(pos)->IsEmpty())
 			{
-				AddPlayerToPos(CVec2D::PosToPos2D(pos, mCols));
+				if (AddPlayerToPos(CVec2D::PosToPos2D(pos, mCols))) { bIsStabilized = false; }
 			}
 		}
 		else if (numPjNearby > 3 || numPjNearby < 2)
@@ -64,7 +68,7 @@ void CBoard::Update(float dTime)
 			// no need to check this here, but reduces operations when no needed
 			if (!_getCellOnPos(pos)->IsEmpty())
 			{
-				RemovePlayerFromPos(CVec2D::PosToPos2D(pos, mCols));
+				if (RemovePlayerFromPos(CVec2D::PosToPos2D(pos, mCols))) { bIsStabilized = false; }
 			}
 		}
 	}
@@ -72,12 +76,13 @@ void CBoard::Update(float dTime)
 
 void CBoard::Draw()
 {
+	std::cout << "\n  ";
 	for (std::list<CCell*>::iterator it = mBoard.begin(); it != mBoard.end(); ++it)
 	{
 		(*it)->Draw();
 		if ((*it)->GetPos()->GetY() == (mCols - 1))
 		{
-			std::cout << "\n";
+			std::cout << "\n  ";
 		}
 	}
 }
@@ -92,14 +97,19 @@ int CBoard::GetPopulation()
 	return mPopulation;
 }
 
-void CBoard::AddPlayerToPos(CVec2D * pos)
+bool CBoard::IsStabilized()
 {
-	_addPlayerToPos(CVec2D::Pos2DToPos(pos, mCols));
+	return bIsStabilized;
 }
 
-void CBoard::RemovePlayerFromPos(CVec2D * pos)
+bool CBoard::AddPlayerToPos(CVec2D * pos, bool playerCanDie)
 {
-	_removePlayerFromPos(CVec2D::Pos2DToPos(pos, mCols));
+	return _addPlayerToPos(CVec2D::Pos2DToPos(pos, mCols), playerCanDie);
+}
+
+bool CBoard::RemovePlayerFromPos(CVec2D * pos)
+{
+	return _removePlayerFromPos(CVec2D::Pos2DToPos(pos, mCols));
 }
 
 CPlayer * CBoard::GetPlayerOnPos(CVec2D * pos)
@@ -159,16 +169,24 @@ bool CBoard::_isPosInsideBoard(CVec2D* pos)
 		&& pos->GetY() >= 0);
 }
 
-void CBoard::_addPlayerToPos(int pos)
+bool CBoard::_addPlayerToPos(int pos, bool playerCanDie)
 {
-	_getCellOnPos(pos)->AddPlayerToCell();
-	++mPopulation;
+	if (_getCellOnPos(pos)->AddPlayerToCell(playerCanDie))
+	{
+		++mPopulation;
+		return true;
+	}
+	return false;
 }
 
-void CBoard::_removePlayerFromPos(int pos)
+bool CBoard::_removePlayerFromPos(int pos)
 {
-	_getCellOnPos(pos)->RemovePlayerFromCell();
-	--mPopulation;
+	if (_getCellOnPos(pos)->RemovePlayerFromCell())
+	{
+		--mPopulation;
+		return true;
+	}
+	return false;
 }
 
 CPlayer * CBoard::_getPlayerOnPos(int pos)

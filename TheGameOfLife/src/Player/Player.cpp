@@ -1,11 +1,12 @@
 
 #include "Player.h"
 
-CPlayer::CPlayer()
+CPlayer::CPlayer(bool canDie)
 {
 #ifdef DEBUGINFO
 	std::cout << "Player created!\n";
 #endif
+	bCanBeKilled = canDie;
 }
 
 CPlayer::~CPlayer()
@@ -22,5 +23,10 @@ void CPlayer::Update(float dTime)
 
 void CPlayer::Draw()
 {
-	// TODO
+	//
+}
+
+bool CPlayer::GetCanBeKilled()
+{
+	return bCanBeKilled;
 }

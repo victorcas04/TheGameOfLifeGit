@@ -5,6 +5,15 @@
 
 class CBoard;
 
+#define MAXROWS 40
+#define MINROWS 6
+#define MAXCOLS 60
+#define MINCOLS 12
+#define MAXITER 99999
+#define MINITER 0
+#define MAXTIME 60
+#define MINTIME .1
+
 class CGameManager
 {
 public:
@@ -14,7 +23,9 @@ public:
 	}
 
 	void Init();
-	void CreateBoard();
+	bool InitUserInput();
+	void ResizeScreen();
+	bool CreateBoard();
 	void FillBoard();
 
 	void Update(float dTime);
@@ -31,12 +42,16 @@ private:
 
 	void _testInit();
 
+	inline bool _checkNumRows(int nRows);
+	inline bool _checkNumCols(int nCols);
+	inline bool _checkNumIter(int nIter);
+	inline bool _checkTimeUpdates(float timeUpdates);
+
 	CBoard* mBoard;
 
 	bool bIsGameOver = false;
 	bool bMustDraw = true;
 
-	// TODO: add limits to input
 	int mMaxIterations;
 	int mInnerIterations = 0;
 

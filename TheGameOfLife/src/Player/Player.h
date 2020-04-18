@@ -5,13 +5,16 @@
 class CPlayer
 {
 public:
-	CPlayer();
+	CPlayer(bool canDie = true);
 	~CPlayer();
 
 	void Update(float dTime);
 	void Draw();
 
+	bool GetCanBeKilled();
+
 protected:
 
 private:
+	bool bCanBeKilled;
 };

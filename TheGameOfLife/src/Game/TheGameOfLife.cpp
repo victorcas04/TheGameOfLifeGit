@@ -37,20 +37,31 @@ void _init()
 
 	// managers
 	gameManager = gameManager->getInstance();
+	if (gameManager)
+	{
+		gameManager->Init();
+	}
+	else
+	{
+		std::cout << "ERROR: cannot create game manager.\n";
+	}
 }
 
 void _update()
 {
-	while (!gameManager->GetIsGameOver())
+	if (gameManager)
 	{
-		deltaTime = postFrame - preFrame;
-		preFrame = postFrame;
+		while (!gameManager->GetIsGameOver())
+		{
+			deltaTime = postFrame - preFrame;
+			preFrame = postFrame;
 
-		_input();
-		_logic();
-		_render();
+			_input();
+			_logic();
+			_render();
 
-		postFrame = static_cast<float>(std::clock());
+			postFrame = static_cast<float>(std::clock());
+		}
 	}
 }
 

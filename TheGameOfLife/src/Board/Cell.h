@@ -1,7 +1,7 @@
 #pragma once
 
 #include <iostream>
-#include "../Other/Vec2D.h"
+#include "Vec2D.h"
 
 class CPlayer;
 

@@ -1,6 +1,6 @@
 
 #include "Cell.h"
-#include "../Player/Player.h"
+#include "Player.h"
 
 CCell::CCell(CVec2D* newPos)
 {
@@ -18,6 +18,7 @@ void CCell::Update(float dTime)
 void CCell::Draw()
 {
 	// TODO
+
 	std::cout << (IsEmpty() ? " E" : " P");
 }
 

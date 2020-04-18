@@ -18,7 +18,7 @@ std::string CVec2D::ToString()
 	return vecString;
 }
 
-int CVec2D::Pos2DToPos(CVec2D* pos2d, int maxCols)
+int CVec2D::Pos2DToPos(const CVec2D* pos2d, int maxCols)
 {
 	return pos2d->GetX() * maxCols + pos2d->GetY();
 }
@@ -30,14 +30,35 @@ CVec2D* CVec2D::PosToPos2D(int pos, int maxCols)
 	return new CVec2D(posX, posY);
 }
 
-CVec2D* operator+(CVec2D& v, CVec2D& v2)
+float CVec2D::Dist(const CVec2D* v2) const 
+{
+	return static_cast<float>(sqrt(pow(mX - v2->GetX(), 2) + pow(mY - v2->GetY(), 2)));
+}
+
+CVec2D* operator+(const CVec2D& v, const CVec2D& v2)
 {
 	return new CVec2D(v2.GetX() + v.GetX(), v2.GetY() + v.GetY());
 }
 
-CVec2D* operator-(CVec2D& v, CVec2D& v2)
+CVec2D* operator-(const CVec2D& v, const CVec2D& v2)
 {
 	return new CVec2D(v.GetX() - v2.GetX(), v.GetY() - v2.GetY());
+}
+
+CVec2D* operator*(const CVec2D& v, const CVec2D& v2)
+{
+	return new CVec2D(v.GetX() * v2.GetX(), v.GetY() * v2.GetY());
+}
+
+CVec2D* operator/(const CVec2D& v, const CVec2D& v2)
+{
+	CVec2D* newVec = new CVec2D(v.GetX(), v.GetY());
+	if (v2.GetX() != 0 && v2.GetY() != 0)
+	{
+		newVec->mX /= v2.GetX();
+		newVec->mY /= v2.GetY();
+	}
+	return newVec;
 }
 
 void CVec2D::Test(int maxCols)

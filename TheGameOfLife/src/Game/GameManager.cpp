@@ -1,6 +1,6 @@
 
 #include "GameManager.h"
-#include "../Board/Board.h"
+#include "Board.h"
 
 CGameManager* CGameManager::m_instanceGameManager = nullptr;
 

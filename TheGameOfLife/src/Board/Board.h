@@ -3,7 +3,7 @@
 #include <iostream>
 #include <list>
 
-#include "../Other/Vec2D.h"
+#include "Vec2D.h"
 
 class CPlayer;
 class CCell;

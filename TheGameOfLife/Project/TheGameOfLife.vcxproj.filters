@@ -39,40 +39,40 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Game\TheGameOfLife.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Board\Board.cpp">
-      <Filter>Source Files\Board</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Player\Player.cpp">
+    <ClCompile Include="..\src\Player\Player.cpp">
       <Filter>Source Files\Player</Filter>
     </ClCompile>
-    <ClCompile Include="..\Game\GameManager.cpp">
-      <Filter>Source Files\Game</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Other\Vec2D.cpp">
+    <ClCompile Include="..\src\Other\Vec2D.cpp">
       <Filter>Source Files\Other</Filter>
     </ClCompile>
-    <ClCompile Include="..\Board\Cell.cpp">
+    <ClCompile Include="..\src\Game\GameManager.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Game\TheGameOfLife.cpp">
+      <Filter>Source Files\Game</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Board\Board.cpp">
+      <Filter>Source Files\Board</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\Board\Cell.cpp">
       <Filter>Source Files\Board</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\Board\Board.h">
+    <ClInclude Include="..\src\Board\Board.h">
       <Filter>Header Files\Board</Filter>
     </ClInclude>
-    <ClInclude Include="..\Player\Player.h">
-      <Filter>Header Files\Player</Filter>
+    <ClInclude Include="..\src\Board\Cell.h">
+      <Filter>Header Files\Board</Filter>
     </ClInclude>
-    <ClInclude Include="..\Game\GameManager.h">
+    <ClInclude Include="..\src\Game\GameManager.h">
       <Filter>Header Files\Game</Filter>
     </ClInclude>
-    <ClInclude Include="..\Other\Vec2D.h">
+    <ClInclude Include="..\src\Other\Vec2D.h">
       <Filter>Header Files\Other</Filter>
     </ClInclude>
-    <ClInclude Include="..\Board\Cell.h">
-      <Filter>Header Files\Board</Filter>
+    <ClInclude Include="..\src\Player\Player.h">
+      <Filter>Header Files\Player</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

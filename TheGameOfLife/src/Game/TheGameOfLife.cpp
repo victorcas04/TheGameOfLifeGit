@@ -4,10 +4,11 @@
  * @link https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life
  */
 
+#pragma once
+
 #include <iostream>
 #include <ctime>
-
-#include "../Game/GameManager.h"
+#include "GameManager.h"
 
 void _init();
 void _update();
@@ -45,8 +46,7 @@ void _update()
 		deltaTime = postFrame - preFrame;
 		preFrame = postFrame;
 
-		// no need for user input since it's a 0 player game
-		//_input();
+		_input();
 		_logic();
 		_render();
 
@@ -56,7 +56,7 @@ void _update()
 
 void _input()
 {
-
+	// no need for user input since it's a 0 player game
 }
 
 void _logic()

@@ -1,6 +1,5 @@
 
 #include "Cell.h"
-#include "Player.h"
 
 CCell::CCell(CVec2D* newPos)
 {
@@ -16,7 +15,7 @@ void CCell::Update(float dTime)
 
 void CCell::Draw()
 {
-	std::cout << (IsEmpty() ? " +" : (mPj->GetCanBeKilled() ? " O" : " @"));
+	std::cout << " " << (IsEmpty() ? DRAWBOARDCHAR : mPj->GetDrawChar());
 }
 
 CVec2D * CCell::GetPos()
@@ -44,12 +43,12 @@ bool CCell::IsEmpty()
 	return mPj == nullptr;
 }
 
-bool CCell::AddPlayerToCell(bool playerCanDie)
+bool CCell::AddPlayerToCell(CPlayer::PLAYER_TYPE pjType)
 {
 	if (!mPj)
 	{
-		mPj = new CPlayer(playerCanDie);
-		return true;
+		mPj = CPlayer::NewPlayer(pjType);
+		if (mPj) { return true; }
 	}
 	return false;
 }

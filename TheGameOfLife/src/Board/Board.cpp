@@ -4,7 +4,7 @@
 
 CBoard::CBoard(int rows, int columns)
 {
-#ifdef DEBUGINFO
+#ifdef DRAWDEBUGINFO
 	std::cout << "Creating board...\n";
 #endif
 	mRows = rows;
@@ -32,7 +32,7 @@ void CBoard::AddInitPlayers(std::list<CVec2D*> listInitPosNormal, std::list<CVec
 	}
 	for (std::list<CVec2D*>::iterator it = listInitPosInmortal.begin(); it != listInitPosInmortal.end(); ++it)
 	{
-		if (AddPlayerToPos((*it), false)) { _getCellOnPos(CVec2D::Pos2DToPos((*it), mCols))->SetIsInitPos(); }
+		if (AddPlayerToPos((*it), CPlayer::INMORTAL)) { _getCellOnPos(CVec2D::Pos2DToPos((*it), mCols))->SetIsInitPos(); }
 	}
 }
 
@@ -102,9 +102,9 @@ bool CBoard::IsStabilized()
 	return bIsStabilized;
 }
 
-bool CBoard::AddPlayerToPos(CVec2D * pos, bool playerCanDie)
+bool CBoard::AddPlayerToPos(CVec2D * pos, CPlayer::PLAYER_TYPE pjType)
 {
-	return _addPlayerToPos(CVec2D::Pos2DToPos(pos, mCols), playerCanDie);
+	return _addPlayerToPos(CVec2D::Pos2DToPos(pos, mCols), pjType);
 }
 
 bool CBoard::RemovePlayerFromPos(CVec2D * pos)
@@ -169,9 +169,9 @@ bool CBoard::_isPosInsideBoard(CVec2D* pos)
 		&& pos->GetY() >= 0);
 }
 
-bool CBoard::_addPlayerToPos(int pos, bool playerCanDie)
+bool CBoard::_addPlayerToPos(int pos, CPlayer::PLAYER_TYPE pjType)
 {
-	if (_getCellOnPos(pos)->AddPlayerToCell(playerCanDie))
+	if (_getCellOnPos(pos)->AddPlayerToCell(pjType))
 	{
 		++mPopulation;
 		return true;

@@ -1,11 +1,11 @@
 #pragma once
 
+#include "defines.h"
 #include <iostream>
 #include <list>
-
 #include "Vec2D.h"
+#include "Player.h"
 
-class CPlayer;
 class CCell;
 
 class CBoard
@@ -22,7 +22,7 @@ public:
 	int GetSize();
 	int GetPopulation();
 	bool IsStabilized();
-	bool AddPlayerToPos(CVec2D* pos, bool playerCanDie = true);
+	bool AddPlayerToPos(CVec2D* pos, CPlayer::PLAYER_TYPE pjType = CPlayer::NORMAL);
 	bool RemovePlayerFromPos(CVec2D* pos);
 	CPlayer* GetPlayerOnPos(CVec2D* pos);
 	int GetNumPlayersNearbyPos(CVec2D* pos);
@@ -32,7 +32,7 @@ protected:
 
 	CCell* _getCellOnPos(int pos);
 	CPlayer* _getPlayerOnPos(int pos);
-	bool _addPlayerToPos(int pos, bool playerCanDie = true);
+	bool _addPlayerToPos(int pos, CPlayer::PLAYER_TYPE pjType = CPlayer::NORMAL);
 	bool _removePlayerFromPos(int pos);
 
 	std::list<CCell*> _getCellsNearby(CVec2D * pos);

@@ -7,14 +7,9 @@
 
 CGameManager* CGameManager::m_instanceGameManager = nullptr;
 
-//#define TEST
-#define DRAW
-#define CLEANSCREEN
-//#define DEBUGINFO
-
 CGameManager::CGameManager()
 {
-#ifdef DEBUGINFO
+#ifdef DRAWDEBUGINFO
 	std::cout << "Creating game manager...\n";
 #endif
 }
@@ -51,7 +46,7 @@ bool CGameManager::InitUserInput()
 {
 	// TODO: add user input
 	// TODO: data driven
-	int inputRows = 24;
+	int inputRows = INPUTROWS;
 	if (_checkNumRows(inputRows))
 	{
 		mRows = inputRows;
@@ -61,7 +56,7 @@ bool CGameManager::InitUserInput()
 		return false;
 	}
 
-	int inputCols = 32;
+	int inputCols = INPUTCOLS;
 	if (_checkNumCols(inputCols))
 	{
 		mColumns = inputCols;
@@ -71,7 +66,7 @@ bool CGameManager::InitUserInput()
 		return false;
 	}
 
-	int inputIter = 1000;
+	int inputIter = INPUTITER;
 	if (_checkNumIter(inputIter))
 	{
 		mMaxIterations = inputIter;
@@ -81,7 +76,7 @@ bool CGameManager::InitUserInput()
 		return false;
 	}
 
-	float inputTime = 2.0f;
+	float inputTime = INPUTTIME;
 	if (_checkTimeUpdates(inputTime))
 	{
 		mTimeBetweenSteps = inputTime;

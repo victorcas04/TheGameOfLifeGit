@@ -6,6 +6,7 @@
 
 #pragma once
 
+#include "defines.h"
 #include <iostream>
 #include <ctime>
 #include "GameManager.h"

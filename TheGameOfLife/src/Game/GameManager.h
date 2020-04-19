@@ -1,5 +1,6 @@
 #pragma once
 
+#include "defines.h"
 #include <stdlib.h>
 #include <iostream>
 
@@ -7,12 +8,20 @@ class CBoard;
 
 #define MAXROWS 40
 #define MINROWS 6
+
 #define MAXCOLS 60
 #define MINCOLS 12
+
 #define MAXITER 99999
 #define MINITER 0
+
 #define MAXTIME 60
 #define MINTIME .1
+
+#define INPUTROWS 24
+#define INPUTCOLS 32
+#define INPUTITER 1000
+#define INPUTTIME .5
 
 class CGameManager
 {

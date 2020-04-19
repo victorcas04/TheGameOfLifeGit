@@ -165,13 +165,18 @@
     <ClCompile Include="..\src\Game\TheGameOfLife.cpp" />
     <ClCompile Include="..\src\Other\Vec2D.cpp" />
     <ClCompile Include="..\src\Player\Player.cpp" />
+    <ClCompile Include="..\src\Player\PlayerInmortal.cpp" />
+    <ClCompile Include="..\src\Player\PlayerNormal.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Board\Board.h" />
     <ClInclude Include="..\src\Board\Cell.h" />
     <ClInclude Include="..\src\Game\GameManager.h" />
+    <ClInclude Include="..\src\Other\defines.h" />
     <ClInclude Include="..\src\Other\Vec2D.h" />
     <ClInclude Include="..\src\Player\Player.h" />
+    <ClInclude Include="..\src\Player\PlayerInmortal.h" />
+    <ClInclude Include="..\src\Player\PlayerNormal.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

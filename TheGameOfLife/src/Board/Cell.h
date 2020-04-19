@@ -1,9 +1,9 @@
 #pragma once
 
+#include "defines.h"
 #include <iostream>
 #include "Vec2D.h"
-
-class CPlayer;
+#include "Player.h"
 
 class CCell
 {
@@ -20,7 +20,7 @@ public:
 	bool WasEmptyLastUpdate();
 	bool IsEmpty();
 	CPlayer* GetPlayerFromCell();
-	bool AddPlayerToCell(bool playerCanDie = true);
+	bool AddPlayerToCell(CPlayer::PLAYER_TYPE pjType);
 	bool RemovePlayerFromCell();	
 
 protected:

@@ -20,16 +20,97 @@ cols { 12 }
 iter { 10 }
 time { 10.0 }
 */
-	// TODO
 	std::string fullpath = std::string(DATAPATH) + filename;
 #ifdef DRAWDEBUGINFO
 	std::cout << "Board data driven full path: " << fullpath << "\n";
 #endif
 
-	mDataBoard.ddRows = 16;
-	mDataBoard.ddCols = 14;
-	mDataBoard.ddIter = 10;
-	mDataBoard.ddTime = 10.0;
+	std::ifstream myfile(fullpath);
+	if (myfile.is_open())
+	{
+		std::string line;
+		std::string r = "rows";
+		std::string c = "cols";
+		std::string i = "iter";
+		std::string t = "time";
+
+		bool bR = false;
+		bool bC = false;
+		bool bI = false;
+		bool bT = false;
+
+		while (getline(myfile, line, ' '))
+		{
+			if (bR || bC || bI || bT)
+			{
+				if (bR)
+				{
+#ifdef DRAWDEBUGINFO
+					std::cout << "read rows: " << line << '\n';
+#endif			
+					mDataBoard.ddRows = std::stoi(line);
+					bR = false;
+				}
+				else if (bC)
+				{
+#ifdef DRAWDEBUGINFO
+					std::cout << "read cols: " << line << '\n';
+#endif			
+					mDataBoard.ddCols = std::stoi(line);
+					bC = false;
+				}
+				else if (bI)
+				{
+#ifdef DRAWDEBUGINFO
+					std::cout << "read iter: " << line << '\n';
+#endif			
+					mDataBoard.ddIter = std::stoi(line);
+					bI = false;
+				}
+				else if (bT)
+				{
+#ifdef DRAWDEBUGINFO
+					std::cout << "read time: " << line << '\n';
+#endif			
+					mDataBoard.ddTime = std::stof(line);
+					bT = false;
+				}
+				myfile.ignore(256, '\n');
+			}
+			else
+			{
+				if (line.find(r) != std::string::npos)
+				{
+					bR = true;
+				}
+				else if (line.find(c) != std::string::npos)
+				{
+					bC = true;
+				}
+				else if (line.find(i) != std::string::npos)
+				{
+					bI = true;
+				}
+				else if (line.find(t) != std::string::npos)
+				{
+					bT = true;
+				}
+			}
+			if (bR || bC || bI || bT)
+			{
+				myfile.ignore(256, '{');
+				while (!std::isdigit(myfile.peek()))
+				{
+					myfile.ignore(1);
+				}
+			}
+		}
+		myfile.close();
+	}
+	else
+	{
+		std::cout << "Unable to open " << filename << "\n";
+	}
 }
 
 void CDataDriven::ReadPlayersFile(const char* filename)
@@ -53,6 +134,23 @@ inmortal {
 #ifdef DRAWDEBUGINFO
 	std::cout << "Players data driven full path: " << fullpath << "\n";
 #endif
+
+	std::ifstream myfile(fullpath);
+	if (myfile.is_open())
+	{
+		std::string line;
+		while (getline(myfile, line))
+		{
+#ifdef DRAWDEBUGINFO
+			std::cout << line << '\n';
+#endif
+		}
+		myfile.close();
+	}
+	else
+	{
+		std::cout << "Unable to open " << filename << "\n";
+	}
 
 	mDataPlayers.listInitPosNormal.push_back(new CVec2D(0, 1));
 	mDataPlayers.listInitPosNormal.push_back(new CVec2D(1, 0));

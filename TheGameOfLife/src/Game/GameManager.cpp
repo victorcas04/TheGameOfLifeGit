@@ -147,17 +147,8 @@ bool CGameManager::CreateBoard()
 
 void CGameManager::FillBoard()
 {
-	// TODO: data driven
-	std::list<CVec2D*> listInitPosNormal = {
-		new CVec2D(0, 1) ,
-		new CVec2D(1, 0) ,
-		new CVec2D(1, 1) ,
-		new CVec2D(1, 2) };
-	std::list<CVec2D*> listInitPosInmortal = {
-		new CVec2D(3, 0) ,
-		new CVec2D(3, 3) };
-	mBoard->AddInitPlayers(listInitPosNormal, CPlayer::PLAYER_TYPE::NORMAL);
-	mBoard->AddInitPlayers(listInitPosInmortal, CPlayer::PLAYER_TYPE::INMORTAL);
+	mBoard->AddInitPlayers(mData->GetDataPlayersNormal(), CPlayer::PLAYER_TYPE::NORMAL);
+	mBoard->AddInitPlayers(mData->GetDataPlayersInmortal(), CPlayer::PLAYER_TYPE::INMORTAL);
 }
 
 void CGameManager::Update(float dTime)

@@ -4,6 +4,11 @@
 #include <list>
 #include "Vec2D.h"
 
+#include <iostream>
+#include <fstream>
+#include <string>
+#include <cctype>       // std::isdigit
+
 class CDataDriven
 {
 public:

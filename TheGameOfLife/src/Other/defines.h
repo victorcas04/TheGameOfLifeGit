@@ -22,7 +22,8 @@
 
 // DATA DRIVEN ///////////////////////////////////////////////////////////
 
-#define DATAPATH "../../data/"
+#define DATAPATH "../data/"
+// TODO: this should be user input
 #define FILENAMEBOARD "board.txt"
 #define FILENAMEPLAYERS "players.txt"
 

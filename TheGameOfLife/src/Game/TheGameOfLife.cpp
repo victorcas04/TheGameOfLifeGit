@@ -8,7 +8,7 @@
 
 #include "defines.h"
 #include <iostream>
-#include <ctime>
+#include <ctime>			// std::clock()
 #include "GameManager.h"
 
 void _init();

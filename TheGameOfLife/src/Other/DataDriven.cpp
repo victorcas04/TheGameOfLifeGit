@@ -11,15 +11,21 @@ CDataDriven::~CDataDriven()
 
 }
 
+// TODO: try std::stoi instead of manually find numbers on string
+// http://www.cplusplus.com/reference/string/stoi/
+
+// BOARD FORMAT
+/*
+	rows { 24 }
+	cols { 12 }
+	iter { 10 }
+	time { 10.0 }
+*/
+
 void CDataDriven::ReadBoardFile(const char* filename)
 {
-	// BOARD FORMAT
-/*
-rows { 24 }
-cols { 12 }
-iter { 10 }
-time { 10.0 }
-*/
+	float initTime = static_cast<float>(std::clock());
+
 	std::string fullpath = std::string(DATAPATH) + filename;
 #ifdef DRAWDEBUGINFO
 	std::cout << "Board data driven full path: " << fullpath << "\n";
@@ -29,15 +35,17 @@ time { 10.0 }
 	if (myfile.is_open())
 	{
 		std::string line;
-		std::string r = "rows";
-		std::string c = "cols";
-		std::string i = "iter";
-		std::string t = "time";
+		std::string strr = "rows";
+		std::string strc = "cols";
+		std::string stri = "iter";
+		std::string strt = "time";
 
 		bool bR = false;
 		bool bC = false;
 		bool bI = false;
 		bool bT = false;
+
+		// TODO: refactor
 
 		while (getline(myfile, line, ' '))
 		{
@@ -79,19 +87,19 @@ time { 10.0 }
 			}
 			else
 			{
-				if (line.find(r) != std::string::npos)
+				if (line.find(strr) != std::string::npos)
 				{
 					bR = true;
 				}
-				else if (line.find(c) != std::string::npos)
+				else if (line.find(strc) != std::string::npos)
 				{
 					bC = true;
 				}
-				else if (line.find(i) != std::string::npos)
+				else if (line.find(stri) != std::string::npos)
 				{
 					bI = true;
 				}
-				else if (line.find(t) != std::string::npos)
+				else if (line.find(strt) != std::string::npos)
 				{
 					bT = true;
 				}
@@ -111,25 +119,31 @@ time { 10.0 }
 	{
 		std::cout << "Unable to open " << filename << "\n";
 	}
+	int elapseTime = static_cast<int>(static_cast<float>(std::clock()) - initTime);
+#ifdef DRAWDEBUGINFO
+	std::cout << "Read time for " << filename << " : " << std::to_string(elapseTime) << " (ms)\n";
+#endif
 }
+
+// PLAYERS FORMAT
+/*
+	normal {
+		( 0 , 1 ),
+		( 1 , 0 ),
+		( 1 , 1 ),
+		( 1 , 2 )
+	}
+
+	inmortal {
+		( 3 , 0 ),
+		( 3 , 3 )
+	}
+*/
 
 void CDataDriven::ReadPlayersFile(const char* filename)
 {
-	// PLAYERS FORMAT
-/*
-normal {
-	(0, 1),
-	(1, 0),
-	(1, 1),
-	(1, 2)
-}
+	float initTime = static_cast<float>(std::clock());
 
-inmortal {
-	(3, 0),
-	(3, 3)
-}
-*/
-	// TODO
 	std::string fullpath = std::string(DATAPATH) + filename;
 #ifdef DRAWDEBUGINFO
 	std::cout << "Players data driven full path: " << fullpath << "\n";
@@ -139,11 +153,111 @@ inmortal {
 	if (myfile.is_open())
 	{
 		std::string line;
-		while (getline(myfile, line))
+		std::string strn = "normal";
+		std::string stri = "inmortal";
+
+		bool bN = false;
+		bool bI = false;
+
+		int x = -1;
+		int y = -1;
+		bool canN = false;
+		bool canI = false;
+
+		// TODO: refactor
+
+		while (getline(myfile, line, ' '))
 		{
+			if (bN || bI)
+			{
+				while (bN)
+				{
+					while (bN && (x == -1 || y == -1))
+					{
+						int c = myfile.peek();
+						while (bN && !std::isdigit(c))
+						{
+							myfile.ignore(1);
+							c = myfile.peek();
+							if (c == '}')
+							{
+								bN = false;
+							}
+						}
+						if (bN)
+						{
+							getline(myfile, line, ' ');
+							if (x == -1)
+							{
+								x = std::stoi(line);
+							}
+							else if (y == -1)
+							{
+								y = std::stoi(line);
+							}
+						}
+					}
+					if (bN)
+					{
 #ifdef DRAWDEBUGINFO
-			std::cout << line << '\n';
-#endif
+						std::cout << "read normal: ( " << x << " , " << y << " )\n";
+#endif				
+						mDataPlayers.listInitPosNormal.push_back(new CVec2D(x, y));
+						x = -1;
+						y = -1;
+					}
+				}
+				while (bI)
+				{
+					while (bI && (x == -1 || y == -1))
+					{
+						int c = myfile.peek();
+						while (bI && !std::isdigit(c))
+						{
+							myfile.ignore(1);
+							c = myfile.peek();
+							if (c == '}')
+							{
+								bI = false;
+							}
+						}
+						if (bI)
+						{
+							getline(myfile, line, ' ');
+							if (x == -1)
+							{
+								x = std::stoi(line);
+							}
+							else if (y == -1)
+							{
+								y = std::stoi(line);
+							}
+						}
+					}
+					if (bI)
+					{
+#ifdef DRAWDEBUGINFO
+						std::cout << "read inmortal: ( " << x << " , " << y << " )\n";
+#endif				
+						mDataPlayers.listInitPosInmortal.push_back(new CVec2D(x, y));
+						x = -1;
+						y = -1;
+					}
+				}
+				myfile.ignore(256, '\n');
+			}
+			else
+			{
+				if (line.find(strn) != std::string::npos)
+				{
+					bN = true;
+				}
+				else if (line.find(stri) != std::string::npos)
+				{
+					bI = true;
+				}
+				myfile.ignore(256, '{');
+			}
 		}
 		myfile.close();
 	}
@@ -151,14 +265,10 @@ inmortal {
 	{
 		std::cout << "Unable to open " << filename << "\n";
 	}
-
-	mDataPlayers.listInitPosNormal.push_back(new CVec2D(0, 1));
-	mDataPlayers.listInitPosNormal.push_back(new CVec2D(1, 0));
-	mDataPlayers.listInitPosNormal.push_back(new CVec2D(1, 1));
-	mDataPlayers.listInitPosNormal.push_back(new CVec2D(1, 2));
-
-	mDataPlayers.listInitPosInmortal.push_back(new CVec2D(3, 0));
-	mDataPlayers.listInitPosInmortal.push_back(new CVec2D(3, 3));
+	int elapseTime = static_cast<int>(static_cast<float>(std::clock()) - initTime);
+#ifdef DRAWDEBUGINFO
+	std::cout << "Read time for " << filename << " : " << std::to_string(elapseTime) << " (ms)\n";
+#endif
 }
 
 int CDataDriven::GetDataRows()

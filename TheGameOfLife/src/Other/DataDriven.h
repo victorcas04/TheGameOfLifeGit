@@ -8,6 +8,7 @@
 #include <fstream>
 #include <string>
 #include <cctype>       // std::isdigit
+#include <ctime>		// std::clock()
 
 class CDataDriven
 {

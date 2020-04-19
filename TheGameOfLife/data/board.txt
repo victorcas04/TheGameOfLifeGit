@@ -1,16 +1,4 @@
-rows { 6 }		// [ 6, 40 ] number of board's rows
-cols { 14 }		// [ 14, 60 ] number of board'snum columns
+rows { 12 }		// [ 6, 40 ] number of board's rows
+cols { 28 }		// [ 14, 60 ] number of board'snum columns
 iter { 10 }		// [ 0, 99999 ] number of simulation's iterations
-time { 0.5 }	// [ 0.1, 60.0 ] time between each simulation step
-
-#define MAXROWS 40
-#define MINROWS 6
-
-#define MAXCOLS 60
-#define MINCOLS 14
-
-#define MAXITER 99999
-#define MINITER 0
-
-#define MAXTIME 60
-#define MINTIME .1
+time { 3 }	// [ 0.1, 60.0 ] time between each simulation step

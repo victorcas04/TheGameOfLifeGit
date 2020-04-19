@@ -24,15 +24,11 @@ void CBoard::_initBoard()
 	}
 }
 
-void CBoard::AddInitPlayers(std::list<CVec2D*> listInitPosNormal, std::list<CVec2D*> listInitPosInmortal)
+void CBoard::AddInitPlayers(std::list<CVec2D*> listInitPos, CPlayer::PLAYER_TYPE pjType)
 {
-	for (std::list<CVec2D*>::iterator it = listInitPosNormal.begin(); it != listInitPosNormal.end(); ++it)
+	for (std::list<CVec2D*>::iterator it = listInitPos.begin(); it != listInitPos.end(); ++it)
 	{
-		if (AddPlayerToPos((*it))) { _getCellOnPos(CVec2D::Pos2DToPos((*it), mCols))->SetIsInitPos(); }
-	}
-	for (std::list<CVec2D*>::iterator it = listInitPosInmortal.begin(); it != listInitPosInmortal.end(); ++it)
-	{
-		if (AddPlayerToPos((*it), CPlayer::INMORTAL)) { _getCellOnPos(CVec2D::Pos2DToPos((*it), mCols))->SetIsInitPos(); }
+		if (AddPlayerToPos((*it), pjType)) { _getCellOnPos(CVec2D::Pos2DToPos((*it), mCols))->SetIsInitPos(); }
 	}
 }
 

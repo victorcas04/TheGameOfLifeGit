@@ -14,7 +14,7 @@ public:
 	CBoard(int rows, int columns);
 	~CBoard() {}
 
-	void AddInitPlayers(std::list<CVec2D*> listInitPosNormal, std::list<CVec2D*> listInitPosInmortal);
+	void AddInitPlayers(std::list<CVec2D*> listInitPosNormal, CPlayer::PLAYER_TYPE pjType);
 
 	void Update(float dTime);
 	void Draw();

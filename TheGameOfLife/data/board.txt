@@ -1,0 +1,4 @@
+rows { 6 }
+cols { 14 }
+iter { 10 }
+time { 1.0 }

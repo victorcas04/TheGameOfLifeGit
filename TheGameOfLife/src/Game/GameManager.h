@@ -4,24 +4,21 @@
 #include <stdlib.h>
 #include <iostream>
 
+#include "DataDriven.h"
+
 class CBoard;
 
 #define MAXROWS 40
 #define MINROWS 6
 
 #define MAXCOLS 60
-#define MINCOLS 12
+#define MINCOLS 14
 
 #define MAXITER 99999
 #define MINITER 0
 
 #define MAXTIME 60
 #define MINTIME .1
-
-#define INPUTROWS 24
-#define INPUTCOLS 32
-#define INPUTITER 1000
-#define INPUTTIME .5
 
 class CGameManager
 {
@@ -32,7 +29,7 @@ public:
 	}
 
 	void Init();
-	bool InitUserInput();
+	bool InitInput();
 	void ResizeScreen();
 	bool CreateBoard();
 	void FillBoard();
@@ -41,7 +38,6 @@ public:
 	void Draw();
 
 	bool GetIsGameOver();
-
 
 protected:
 
@@ -60,15 +56,15 @@ private:
 
 	bool bIsGameOver = false;
 	bool bMustDraw = true;
-
-	int mMaxIterations;
 	int mInnerIterations = 0;
-
-	float mTimeBetweenSteps;
 	float mInnerTimer = 0.0f;
+
+	CDataDriven* mData;
 
 	int mRows;
 	int mColumns;
+	int mMaxIterations;
+	float mTimeBetweenSteps;
 
 	static CGameManager* m_instanceGameManager;
 };

@@ -17,7 +17,7 @@ CGameManager::CGameManager()
 void CGameManager::Init()
 {
 	bIsGameOver = true;
-	if (InitUserInput())
+	if (InitInput())
 	{
 		// time needs to be in ms
 		mTimeBetweenSteps *= 1000;
@@ -42,11 +42,13 @@ void CGameManager::Init()
 	}
 }
 
-bool CGameManager::InitUserInput()
+bool CGameManager::InitInput()
 {
-	// TODO: add user input
-	// TODO: data driven
-	int inputRows = INPUTROWS;
+	mData = new CDataDriven();
+	mData->ReadBoardFile(FILENAMEBOARD);
+	mData->ReadPlayersFile(FILENAMEPLAYERS);
+
+	int inputRows = mData->GetDataRows();
 	if (_checkNumRows(inputRows))
 	{
 		mRows = inputRows;
@@ -56,7 +58,7 @@ bool CGameManager::InitUserInput()
 		return false;
 	}
 
-	int inputCols = INPUTCOLS;
+	int inputCols = mData->GetDataCols();
 	if (_checkNumCols(inputCols))
 	{
 		mColumns = inputCols;
@@ -66,7 +68,7 @@ bool CGameManager::InitUserInput()
 		return false;
 	}
 
-	int inputIter = INPUTITER;
+	int inputIter = mData->GetDataIter();
 	if (_checkNumIter(inputIter))
 	{
 		mMaxIterations = inputIter;
@@ -76,7 +78,7 @@ bool CGameManager::InitUserInput()
 		return false;
 	}
 
-	float inputTime = INPUTTIME;
+	float inputTime = mData->GetDataTime();
 	if (_checkTimeUpdates(inputTime))
 	{
 		mTimeBetweenSteps = inputTime;
@@ -145,7 +147,6 @@ bool CGameManager::CreateBoard()
 
 void CGameManager::FillBoard()
 {
-	// TODO: add user input
 	// TODO: data driven
 	std::list<CVec2D*> listInitPosNormal = {
 		new CVec2D(0, 1) ,
@@ -155,7 +156,8 @@ void CGameManager::FillBoard()
 	std::list<CVec2D*> listInitPosInmortal = {
 		new CVec2D(3, 0) ,
 		new CVec2D(3, 3) };
-	mBoard->AddInitPlayers(listInitPosNormal, listInitPosInmortal);
+	mBoard->AddInitPlayers(listInitPosNormal, CPlayer::PLAYER_TYPE::NORMAL);
+	mBoard->AddInitPlayers(listInitPosInmortal, CPlayer::PLAYER_TYPE::INMORTAL);
 }
 
 void CGameManager::Update(float dTime)

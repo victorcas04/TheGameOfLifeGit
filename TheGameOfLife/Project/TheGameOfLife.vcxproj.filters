@@ -63,6 +63,9 @@
     <ClCompile Include="..\src\Player\PlayerInmortal.cpp">
       <Filter>Source Files\Player</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\Other\DataDriven.cpp">
+      <Filter>Source Files\Other</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\Board\Board.h">
@@ -89,5 +92,16 @@
     <ClInclude Include="..\src\Other\defines.h">
       <Filter>Header Files\Other</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\Other\DataDriven.h">
+      <Filter>Header Files\Other</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="..\data\board.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
+    <Text Include="..\data\players.txt">
+      <Filter>Resource Files</Filter>
+    </Text>
   </ItemGroup>
 </Project>

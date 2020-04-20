@@ -1,7 +1,4 @@
 
-#define _WIN32_WINNT 0x0500
-#include <windows.h>
-
 #include "GameManager.h"
 #include "Board.h"
 
@@ -40,6 +37,75 @@ void CGameManager::Init()
 	{
 		std::cout << "ERROR: wrong input parameters.\n";
 	}
+}
+
+void CGameManager::Update(float dTime)
+{
+	if (mInnerIterations >= mMaxIterations ||
+		mBoard->GetPopulation() == 0 ||
+		mBoard->GetPopulation() == mBoard->GetSize() ||
+		mBoard->IsStabilized())
+	{
+		bIsGameOver = true;
+		bMustDraw = true;
+	}
+	else
+	{
+		mInnerTimer += dTime;
+		if (mInnerTimer >= mTimeBetweenSteps)
+		{
+			mInnerTimer = 0.0f;
+			++mInnerIterations;
+			bMustDraw = true;
+			mBoard->Update(dTime);
+		}
+	}
+}
+
+void CGameManager::Draw()
+{
+#ifdef DRAW
+	if (bMustDraw)
+	{
+#ifdef CLEANSCREEN
+		// clear screen before each draw
+		system("CLS");
+#endif
+		bMustDraw = false;
+		mBoard->Draw();
+
+		if (!bIsGameOver)
+		{
+			std::cout << "\n    RUNNING SIMULATION!\n";
+		}
+		else
+		{
+			if (mBoard->GetPopulation() == 0)
+			{
+				std::cout << "\n YOUR CIVILIZATION IS DEAD!\n";
+			}
+			else if (mBoard->GetPopulation() == mBoard->GetSize())
+			{
+				std::cout << "\n YOU CONQUERED ALL THE LAND!\n";
+			}
+			else if (mBoard->IsStabilized())
+			{
+				std::cout << "\n THE POPULATION STABILIZED!\n";
+			}
+			else
+			{
+				std::cout << "\n YOU SURVIVED THE SIMULATION!\n";
+			}
+		}
+		std::cout << " ITERATIONS - " << mInnerIterations << " -" << " POPULATION - " << mBoard->GetPopulation() << " -\n";
+	}
+#endif
+}
+
+void CGameManager::Shutdown()
+{
+	//
+	while (mConsole != NULL);
 }
 
 bool CGameManager::InitInput()
@@ -93,25 +159,25 @@ bool CGameManager::InitInput()
 
 void CGameManager::ResizeScreen()
 {
-	HWND console = GetConsoleWindow();
+	mConsole = GetConsoleWindow();
 	RECT r;
 
 	//stores the console's current dimensions
-	GetWindowRect(console, &r);
+	GetWindowRect(mConsole, &r);
 	// resize window to desire size
 
 	// TODO: set good size
-	MoveWindow(console, r.left, r.top, (mColumns * 2) * 10, ((mRows + 5) * 2) * 10, TRUE);
+	MoveWindow(mConsole, r.left, r.top, (mColumns * 2) * 10, ((mRows + 5) * 2) * 10, TRUE);
 
 	// disable manual resize
-	SetWindowLong(console, GWL_STYLE, 
-		GetWindowLong(console, GWL_STYLE) & ~(WS_MAXIMIZE | WS_SIZEBOX));
+	SetWindowLong(mConsole, GWL_STYLE, 
+		GetWindowLong(mConsole, GWL_STYLE) & ~(WS_MAXIMIZE | WS_SIZEBOX));
 	// disable minimize button
-	SetWindowLong(console, GWL_STYLE,
-		GetWindowLong(console, GWL_STYLE) & ~WS_MINIMIZEBOX);
+	SetWindowLong(mConsole, GWL_STYLE,
+		GetWindowLong(mConsole, GWL_STYLE) & ~WS_MINIMIZEBOX);
 	// disable maximize button
-	SetWindowLong(console, GWL_STYLE,
-		GetWindowLong(console, GWL_STYLE) & ~WS_MAXIMIZEBOX);
+	SetWindowLong(mConsole, GWL_STYLE,
+		GetWindowLong(mConsole, GWL_STYLE) & ~WS_MAXIMIZEBOX);
 }
 
 void CGameManager::_testInit()
@@ -149,69 +215,6 @@ void CGameManager::FillBoard()
 {
 	mBoard->AddInitPlayers(mData->GetDataPlayersNormal(), CPlayer::PLAYER_TYPE::NORMAL);
 	mBoard->AddInitPlayers(mData->GetDataPlayersInmortal(), CPlayer::PLAYER_TYPE::INMORTAL);
-}
-
-void CGameManager::Update(float dTime)
-{
-	if (mInnerIterations >= mMaxIterations || 
-		mBoard->GetPopulation() == 0 || 
-		mBoard->GetPopulation() == mBoard->GetSize() ||
-		mBoard->IsStabilized())
-	{
-		bIsGameOver = true;
-		bMustDraw = true;
-	}
-	else
-	{
-		mInnerTimer += dTime;
-		if (mInnerTimer >= mTimeBetweenSteps)
-		{
-			mInnerTimer = 0.0f;
-			++mInnerIterations;
-			bMustDraw = true;
-			mBoard->Update(dTime);
-		}
-	}
-}
-
-void CGameManager::Draw()
-{
-#ifdef DRAW
-	if (bMustDraw)
-	{
-#ifdef CLEANSCREEN
-		// clear screen before each draw
-		system("CLS");
-#endif
-		bMustDraw = false;
-		mBoard->Draw();
-
-		if (!bIsGameOver)
-		{
-			std::cout << "\n    RUNNING SIMULATION!\n";
-		}
-		else
-		{
-			if (mBoard->GetPopulation() == 0)
-			{
-				std::cout << "\n YOUR CIVILIZATION IS DEAD!\n";
-			}
-			else if(mBoard->GetPopulation() == mBoard->GetSize())
-			{
-				std::cout << "\n YOU CONQUERED ALL THE LAND!\n";
-			}
-			else if (mBoard->IsStabilized())
-			{
-				std::cout << "\n THE POPULATION STABILIZED!\n";
-			}
-			else
-			{
-				std::cout << "\n YOU SURVIVED THE SIMULATION!\n";
-			}
-		}
-		std::cout << " ITERATIONS - " << mInnerIterations << " -" << " POPULATION - " << mBoard->GetPopulation() << " -\n";
-	}
-#endif
 }
 
 bool CGameManager::GetIsGameOver()

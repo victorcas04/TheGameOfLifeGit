@@ -1,5 +1,8 @@
 #pragma once
 
+#define _WIN32_WINNT 0x0500
+#include <windows.h>
+
 #include "defines.h"
 #include <stdlib.h>
 #include <iostream>
@@ -29,14 +32,13 @@ public:
 	}
 
 	void Init();
+	void Update(float dTime);
+	void Draw();
+	void Shutdown();
 	bool InitInput();
 	void ResizeScreen();
 	bool CreateBoard();
 	void FillBoard();
-
-	void Update(float dTime);
-	void Draw();
-
 	bool GetIsGameOver();
 
 protected:
@@ -52,6 +54,7 @@ private:
 	inline bool _checkNumIter(int nIter);
 	inline bool _checkTimeUpdates(float timeUpdates);
 
+	HWND mConsole;
 	CBoard* mBoard;
 
 	bool bIsGameOver = false;

@@ -83,5 +83,6 @@ void _render()
 
 void _shutdown()
 {
-
+	// TODO: wait user input to avoid sudden close
+	std::cin;
 }

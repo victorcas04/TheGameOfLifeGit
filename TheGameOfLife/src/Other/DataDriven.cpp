@@ -11,9 +11,6 @@ CDataDriven::~CDataDriven()
 
 }
 
-// TODO: try std::stoi instead of manually find numbers on string
-// http://www.cplusplus.com/reference/string/stoi/
-
 // BOARD FORMAT
 /*
 	rows { 24 }
@@ -106,7 +103,7 @@ void CDataDriven::ReadBoardFile(const char* filename)
 			}
 			if (bR || bC || bI || bT)
 			{
-				myfile.ignore(256, '{');
+				myfile.ignore(256, '{');				
 				while (!std::isdigit(myfile.peek()))
 				{
 					myfile.ignore(1);

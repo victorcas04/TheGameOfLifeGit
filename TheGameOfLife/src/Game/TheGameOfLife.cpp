@@ -83,5 +83,8 @@ void _render()
 
 void _shutdown()
 {
-	gameManager->Shutdown();
+	if (gameManager)
+	{
+		gameManager->Shutdown();
+	}
 }

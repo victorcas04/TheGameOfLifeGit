@@ -42,72 +42,65 @@ void CDataDriven::ReadBoardFile(const char* filename)
 		bool bI = false;
 		bool bT = false;
 
-		// TODO: refactor
-
 		while (getline(myfile, line, ' '))
 		{
-			if (bR || bC || bI || bT)
+			if (line.find(strr) != std::string::npos)
 			{
-				if (bR)
-				{
-#ifdef DRAWDEBUGINFO
-					std::cout << "read rows: " << line << '\n';
-#endif			
-					mDataBoard.ddRows = std::stoi(line);
-					bR = false;
-				}
-				else if (bC)
-				{
-#ifdef DRAWDEBUGINFO
-					std::cout << "read cols: " << line << '\n';
-#endif			
-					mDataBoard.ddCols = std::stoi(line);
-					bC = false;
-				}
-				else if (bI)
-				{
-#ifdef DRAWDEBUGINFO
-					std::cout << "read iter: " << line << '\n';
-#endif			
-					mDataBoard.ddIter = std::stoi(line);
-					bI = false;
-				}
-				else if (bT)
-				{
-#ifdef DRAWDEBUGINFO
-					std::cout << "read time: " << line << '\n';
-#endif			
-					mDataBoard.ddTime = std::stof(line);
-					bT = false;
-				}
-				myfile.ignore(256, '\n');
-			}
-			else
-			{
-				if (line.find(strr) != std::string::npos)
-				{
-					bR = true;
-				}
-				else if (line.find(strc) != std::string::npos)
-				{
-					bC = true;
-				}
-				else if (line.find(stri) != std::string::npos)
-				{
-					bI = true;
-				}
-				else if (line.find(strt) != std::string::npos)
-				{
-					bT = true;
-				}
-			}
-			if (bR || bC || bI || bT)
-			{
-				myfile.ignore(256, '{');				
+				myfile.ignore(256, '{');
 				while (!std::isdigit(myfile.peek()))
 				{
 					myfile.ignore(1);
-				}
+				}	
+				getline(myfile, line, ' ');
+#ifdef DRAWDEBUGINFO
+				std::cout << "read rows: " << line << '\n';
+#endif		
+				mDataBoard.ddRows = std::stoi(line);
+				myfile.ignore(256, '\n');
+			}
+			else if (line.find(strc) != std::string::npos)
+			{
+				myfile.ignore(256, '{');
+				while (!std::isdigit(myfile.peek()))
+				{
+					myfile.ignore(1);
+				}	
+				getline(myfile, line, ' ');
+#ifdef DRAWDEBUGINFO
+				std::cout << "read cols: " << line << '\n';
+#endif		
+				mDataBoard.ddCols = std::stoi(line);
+				myfile.ignore(256, '\n');
+			}
+			else if (line.find(stri) != std::string::npos)
+			{
+				myfile.ignore(256, '{');
+				while (!std::isdigit(myfile.peek()))
+				{
+					myfile.ignore(1);
+				}	
+				getline(myfile, line, ' ');
+#ifdef DRAWDEBUGINFO
+				std::cout << "read cols: " << line << '\n';
+#endif		
+				mDataBoard.ddIter = std::stoi(line);
+				myfile.ignore(256, '\n');
+			}
+			else if (line.find(strt) != std::string::npos)
+			{
+				myfile.ignore(256, '{');
+				int p = myfile.peek();
+				while (!std::isdigit(p) && p != '.')
+				{
+					myfile.ignore(1);
+					p = myfile.peek();
+				}		
+				getline(myfile, line, ' ');
+#ifdef DRAWDEBUGINFO
+				std::cout << "read time: " << line << '\n';
+#endif	
+				mDataBoard.ddTime = std::stof(line);
+				myfile.ignore(256, '\n');
 			}
 		}
 		myfile.close();
@@ -153,35 +146,32 @@ void CDataDriven::ReadPlayersFile(const char* filename)
 		std::string strn = "normal";
 		std::string stri = "inmortal";
 
-		bool bN = false;
-		bool bI = false;
+		bool bKeepReadingNormal = true;
+		bool bKeepReadingInmortal = true;
 
 		int x = -1;
 		int y = -1;
-		bool canN = false;
-		bool canI = false;
-
-		// TODO: refactor
 
 		while (getline(myfile, line, ' '))
 		{
-			if (bN || bI)
+			if (line.find(strn) != std::string::npos)
 			{
-				while (bN)
+				myfile.ignore(256, '{');
+				while (bKeepReadingNormal)
 				{
-					while (bN && (x == -1 || y == -1))
+					while (bKeepReadingNormal && (x == -1 || y == -1))
 					{
 						int c = myfile.peek();
-						while (bN && !std::isdigit(c))
+						while (bKeepReadingNormal && !std::isdigit(c))
 						{
 							myfile.ignore(1);
 							c = myfile.peek();
 							if (c == '}')
 							{
-								bN = false;
+								bKeepReadingNormal = false;
 							}
 						}
-						if (bN)
+						if (bKeepReadingNormal)
 						{
 							getline(myfile, line, ' ');
 							if (x == -1)
@@ -194,7 +184,7 @@ void CDataDriven::ReadPlayersFile(const char* filename)
 							}
 						}
 					}
-					if (bN)
+					if (bKeepReadingNormal)
 					{
 #ifdef DRAWDEBUGINFO
 						std::cout << "read normal: ( " << x << " , " << y << " )\n";
@@ -204,21 +194,25 @@ void CDataDriven::ReadPlayersFile(const char* filename)
 						y = -1;
 					}
 				}
-				while (bI)
+			}
+			else if (line.find(stri) != std::string::npos)
+			{
+				myfile.ignore(256, '{');
+				while (bKeepReadingInmortal)
 				{
-					while (bI && (x == -1 || y == -1))
+					while (bKeepReadingInmortal && (x == -1 || y == -1))
 					{
 						int c = myfile.peek();
-						while (bI && !std::isdigit(c))
+						while (bKeepReadingInmortal && !std::isdigit(c))
 						{
 							myfile.ignore(1);
 							c = myfile.peek();
 							if (c == '}')
 							{
-								bI = false;
+								bKeepReadingInmortal = false;
 							}
 						}
-						if (bI)
+						if (bKeepReadingInmortal)
 						{
 							getline(myfile, line, ' ');
 							if (x == -1)
@@ -231,7 +225,7 @@ void CDataDriven::ReadPlayersFile(const char* filename)
 							}
 						}
 					}
-					if (bI)
+					if (bKeepReadingInmortal)
 					{
 #ifdef DRAWDEBUGINFO
 						std::cout << "read inmortal: ( " << x << " , " << y << " )\n";
@@ -241,19 +235,6 @@ void CDataDriven::ReadPlayersFile(const char* filename)
 						y = -1;
 					}
 				}
-				myfile.ignore(256, '\n');
-			}
-			else
-			{
-				if (line.find(strn) != std::string::npos)
-				{
-					bN = true;
-				}
-				else if (line.find(stri) != std::string::npos)
-				{
-					bI = true;
-				}
-				myfile.ignore(256, '{');
 			}
 		}
 		myfile.close();

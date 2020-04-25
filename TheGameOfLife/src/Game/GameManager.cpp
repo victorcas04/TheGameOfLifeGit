@@ -104,15 +104,14 @@ void CGameManager::Draw()
 
 void CGameManager::Shutdown()
 {
-	//
-	while (mConsole != NULL);
+	WaitCloseConsole();
 }
 
 bool CGameManager::InitInput()
 {
 	mData = new CDataDriven();
-	mData->ReadBoardFile(FILENAMEBOARD);
-	mData->ReadPlayersFile(FILENAMEPLAYERS);
+	if (!mData->ReadBoardFile(CDataDriven::AskFileName(CDataDriven::FILETYPES::BOARD))) { WaitCloseConsole(); }
+	if (!mData->ReadPlayersFile(CDataDriven::AskFileName(CDataDriven::FILETYPES::PLAYERLIST))) { WaitCloseConsole(); }
 
 	int inputRows = mData->GetDataRows();
 	if (_checkNumRows(inputRows))
@@ -220,4 +219,9 @@ void CGameManager::FillBoard()
 bool CGameManager::GetIsGameOver()
 {
 	return bIsGameOver;
+}
+
+void CGameManager::WaitCloseConsole()
+{
+	while (mConsole != NULL);
 }

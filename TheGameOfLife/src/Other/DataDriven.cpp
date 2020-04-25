@@ -19,11 +19,11 @@ CDataDriven::~CDataDriven()
 	time { 10.0 }
 */
 
-void CDataDriven::ReadBoardFile(const char* filename)
+bool CDataDriven::ReadBoardFile(std::string filename)
 {
 	float initTime = static_cast<float>(std::clock());
 
-	std::string fullpath = std::string(DATAPATH) + filename;
+	std::string fullpath = DATAPATH + filename;
 #ifdef DRAWDEBUGINFO
 	std::cout << "Board data driven full path: " << fullpath << "\n";
 #endif
@@ -108,11 +108,13 @@ void CDataDriven::ReadBoardFile(const char* filename)
 	else
 	{
 		std::cout << "Unable to open " << filename << "\n";
+		return false;
 	}
 	int elapseTime = static_cast<int>(static_cast<float>(std::clock()) - initTime);
 #ifdef DRAWDEBUGINFO
 	std::cout << "Read time for " << filename << " : " << std::to_string(elapseTime) << " (ms)\n";
 #endif
+	return true;
 }
 
 // PLAYERS FORMAT
@@ -130,11 +132,11 @@ void CDataDriven::ReadBoardFile(const char* filename)
 	}
 */
 
-void CDataDriven::ReadPlayersFile(const char* filename)
+bool CDataDriven::ReadPlayersFile(std::string filename)
 {
 	float initTime = static_cast<float>(std::clock());
 
-	std::string fullpath = std::string(DATAPATH) + filename;
+	std::string fullpath = DATAPATH + filename;
 #ifdef DRAWDEBUGINFO
 	std::cout << "Players data driven full path: " << fullpath << "\n";
 #endif
@@ -242,11 +244,13 @@ void CDataDriven::ReadPlayersFile(const char* filename)
 	else
 	{
 		std::cout << "Unable to open " << filename << "\n";
+		return false;
 	}
 	int elapseTime = static_cast<int>(static_cast<float>(std::clock()) - initTime);
 #ifdef DRAWDEBUGINFO
 	std::cout << "Read time for " << filename << " : " << std::to_string(elapseTime) << " (ms)\n";
 #endif
+	return true;
 }
 
 int CDataDriven::GetDataRows()
@@ -277,4 +281,30 @@ std::list<CVec2D*> CDataDriven::GetDataPlayersNormal()
 std::list<CVec2D*> CDataDriven::GetDataPlayersInmortal()
 {
 	return mDataPlayers.listInitPosInmortal;
+}
+
+std::string CDataDriven::AskFileName(FILETYPES filetype)
+{
+	std::string filename;
+	std::string whatToLoad;
+	std::string filenameDef;
+	if (filetype == FILETYPES::BOARD)
+	{
+		whatToLoad = "Board";
+		filenameDef = DEFAULTFILENAMEBOARD;
+	}
+	else if (filetype == FILETYPES::PLAYERLIST)
+	{
+		whatToLoad = "Player list";
+		filenameDef = DEFAULTFILENAMEPLAYERLIST;
+	}
+	std::cout << "\nIntroduce filename to load: " << whatToLoad << "\n";
+	std::cout << "(Press -D- for default filename: " << filenameDef << ".txt)\n";
+	std::cin >> filename;
+	if (filename == "d" || filename == "D")
+	{
+		filename = filenameDef;
+	}
+	filename += ".txt";
+	return filename;
 }

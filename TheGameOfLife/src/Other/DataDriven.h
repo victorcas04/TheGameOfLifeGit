@@ -16,6 +16,12 @@ public:
 	CDataDriven();
 	~CDataDriven();
 
+	enum FILETYPES
+	{
+		BOARD,
+		PLAYERLIST
+	};
+
 	struct DATABOARD
 	{
 		int ddRows;
@@ -30,8 +36,8 @@ public:
 		std::list<CVec2D*> listInitPosInmortal;
 	};
 
-	void ReadBoardFile(const char* filename);
-	void ReadPlayersFile(const char* filename);
+	bool ReadBoardFile(std::string filename);
+	bool ReadPlayersFile(std::string filename);
 
 	int GetDataRows();
 	int GetDataCols();
@@ -39,6 +45,8 @@ public:
 	float GetDataTime();
 	std::list<CVec2D*> GetDataPlayersNormal();
 	std::list<CVec2D*> GetDataPlayersInmortal();
+
+	static std::string AskFileName(FILETYPES filetype = FILETYPES::BOARD);
 
 protected:
 

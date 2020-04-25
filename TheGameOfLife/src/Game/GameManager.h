@@ -40,6 +40,7 @@ public:
 	bool CreateBoard();
 	void FillBoard();
 	bool GetIsGameOver();
+	void WaitCloseConsole();
 
 protected:
 

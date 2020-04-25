@@ -107,7 +107,7 @@ bool CDataDriven::ReadBoardFile(std::string filename)
 	}
 	else
 	{
-		std::cout << "Unable to open " << filename << "\n";
+		std::cout << "ERROR: Unable to open " << filename << "\n";
 		return false;
 	}
 	int elapseTime = static_cast<int>(static_cast<float>(std::clock()) - initTime);
@@ -243,7 +243,7 @@ bool CDataDriven::ReadPlayersFile(std::string filename)
 	}
 	else
 	{
-		std::cout << "Unable to open " << filename << "\n";
+		std::cout << "ERROR: Unable to open " << filename << "\n";
 		return false;
 	}
 	int elapseTime = static_cast<int>(static_cast<float>(std::clock()) - initTime);

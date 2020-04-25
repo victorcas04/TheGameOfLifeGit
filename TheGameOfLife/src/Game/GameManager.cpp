@@ -14,6 +14,7 @@ CGameManager::CGameManager()
 void CGameManager::Init()
 {
 	bIsGameOver = true;
+	mConsole = GetConsoleWindow();
 	if (InitInput())
 	{
 		// time needs to be in ms
@@ -158,7 +159,6 @@ bool CGameManager::InitInput()
 
 void CGameManager::ResizeScreen()
 {
-	mConsole = GetConsoleWindow();
 	RECT r;
 
 	//stores the console's current dimensions

@@ -299,8 +299,13 @@ std::string CDataDriven::AskFileName(FILETYPES filetype)
 		filenameDef = DEFAULTFILENAMEPLAYERLIST;
 	}
 	std::cout << "\nIntroduce filename to load: " << whatToLoad << "\n";
+	std::cout << "(Press -R- for random " << whatToLoad << " options)\n";
 	std::cout << "(Press -D- for default filename: " << filenameDef << ".txt)\n";
 	std::cin >> filename;
+	if (filename == "r" || filename == "R")
+	{
+		return "random";
+	}
 	if (filename == "d" || filename == "D")
 	{
 		filename = filenameDef;

@@ -32,11 +32,12 @@ void CGameManager::Init()
 		else
 		{
 			std::cout << "ERROR: cannot create board.\n";
+			WaitCloseConsole();
 		}
 	}
 	else
 	{
-		std::cout << "ERROR: wrong input parameters.\n";
+		WaitCloseConsole();
 	}
 }
 
@@ -111,49 +112,60 @@ void CGameManager::Shutdown()
 bool CGameManager::InitInput()
 {
 	mData = new CDataDriven();
-	if (!mData->ReadBoardFile(CDataDriven::AskFileName(CDataDriven::FILETYPES::BOARD))) { WaitCloseConsole(); }
-	if (!mData->ReadPlayersFile(CDataDriven::AskFileName(CDataDriven::FILETYPES::PLAYERLIST))) { WaitCloseConsole(); }
 
-	int inputRows = mData->GetDataRows();
-	if (_checkNumRows(inputRows))
+	// BOARD DATA
+	std::string boardFilename = CDataDriven::AskFileName(CDataDriven::FILETYPES::BOARD);
+	if (boardFilename != "random")
 	{
+		if (!mData->ReadBoardFile(boardFilename)) { return false; }
+		int inputRows = mData->GetDataRows();
+		if (!_checkNumRows(inputRows))
+		{
+			std::cout << "ERROR: rows parameter [ " << inputRows << " ] out of range [ " << MINROWS << " , " << MAXROWS << "]\n";
+			return false;
+		}
 		mRows = inputRows;
-	}
-	else
-	{
-		return false;
-	}
 
-	int inputCols = mData->GetDataCols();
-	if (_checkNumCols(inputCols))
-	{
+		int inputCols = mData->GetDataCols();
+		if (!_checkNumCols(inputCols))
+		{
+			std::cout << "ERROR: columns parameter [ " << inputCols << " ] out of range [ " << MINCOLS << " , " << MAXCOLS << "]\n";
+			return false;
+		}
 		mColumns = inputCols;
-	}
-	else
-	{
-		return false;
-	}
 
-	int inputIter = mData->GetDataIter();
-	if (_checkNumIter(inputIter))
-	{
+		int inputIter = mData->GetDataIter();
+		if (!_checkNumIter(inputIter))
+		{
+			std::cout << "ERROR: iterations parameter [ " << inputIter << " ] out of range [ " << MINITER << " , " << MAXITER << "]\n";
+			return false;
+		}
+
 		mMaxIterations = inputIter;
-	}
-	else
-	{
-		return false;
-	}
 
-	float inputTime = mData->GetDataTime();
-	if (_checkTimeUpdates(inputTime))
-	{
+		float inputTime = mData->GetDataTime();
+		if (!_checkTimeUpdates(inputTime))
+		{
+			std::cout << "ERROR: time between simulation steps parameter [ " << inputTime << " ] out of range [ " << MINTIME << " , " << MAXTIME << "]\n";
+			return false;
+		}
 		mTimeBetweenSteps = inputTime;
 	}
 	else
 	{
-		return false;
+		// TODO: random board
 	}
 
+	// PLAYER LIST DATA
+	std::string playerListFilename = CDataDriven::AskFileName(CDataDriven::FILETYPES::PLAYERLIST);
+	if (playerListFilename != "random")
+	{
+		if (!mData->ReadPlayersFile(playerListFilename)) { return false; }
+	}
+	else
+	{
+		// TODO: random board
+	}
 	return true;
 }
 

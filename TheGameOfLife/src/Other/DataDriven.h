@@ -16,24 +16,46 @@ public:
 	CDataDriven();
 	~CDataDriven();
 
+	void InitBoardStruct();
+	void InitPlayerListStruct();
+
 	enum FILETYPES
 	{
 		BOARD,
 		PLAYERLIST
 	};
 
-	struct DATABOARD
+	struct BOARD_DATA_struct
 	{
-		int ddRows;
-		int ddCols;
-		int ddIter;
-		float ddTime;
+		struct BD_INT_struct
+		{
+			std::string NAME;
+			int MAX;
+			int MIN;
+			int dd;
+		};
+
+		struct BD_FLOAT_struct
+		{
+			std::string NAME;
+			float MAX;
+			float MIN;
+			float dd;
+		};
+
+		std::list<BD_INT_struct*> allBoardData_int;
+		std::list<BD_FLOAT_struct*> allBoardData_float;
 	};
 
-	struct DATAPLAYERS
+	struct PLAYERS_DATA_struct
 	{
-		std::list<CVec2D*> listInitPosNormal;
-		std::list<CVec2D*> listInitPosInmortal;
+		struct PD_struct
+		{
+			std::string NAME;
+			std::list<CVec2D*> listInitPos;
+		};
+
+		std::list<PD_struct*> allPlayersData;
 	};
 
 	bool ReadBoardFile(std::string filename);
@@ -51,6 +73,6 @@ public:
 protected:
 
 private:
-	DATABOARD mDataBoard;
-	DATAPLAYERS mDataPlayers;
+	BOARD_DATA_struct mDataBoard;
+	PLAYERS_DATA_struct mDataPlayers;
 };

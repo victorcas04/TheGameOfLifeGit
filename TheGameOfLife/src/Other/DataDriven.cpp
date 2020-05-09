@@ -11,6 +11,44 @@ CDataDriven::~CDataDriven()
 
 }
 
+void CDataDriven::InitBoardStruct()
+{
+	BOARD_DATA_struct::BD_INT_struct* BD_ROWS = new BOARD_DATA_struct::BD_INT_struct();
+	BD_ROWS->NAME = ROWS_NAME;
+	BD_ROWS->MAX = ROWS_MAX;
+	BD_ROWS->MIN = ROWS_MIN;
+	mDataBoard.allBoardData_int.push_back(BD_ROWS);
+
+	BOARD_DATA_struct::BD_INT_struct* BD_COLS = new BOARD_DATA_struct::BD_INT_struct();
+	BD_COLS->NAME = COLUMNS_NAME;
+	BD_COLS->MAX = COLUMNS_MAX;
+	BD_COLS->MIN = COLUMNS_MIN;
+	mDataBoard.allBoardData_int.push_back(BD_COLS);
+
+	BOARD_DATA_struct::BD_INT_struct* BD_ITER = new BOARD_DATA_struct::BD_INT_struct();
+	BD_ITER->NAME = ITERATIONS_NAME;
+	BD_ITER->MAX = ITERATIONS_MAX;
+	BD_ITER->MIN = ITERATIONS_MIN;
+	mDataBoard.allBoardData_int.push_back(BD_ITER);
+
+	BOARD_DATA_struct::BD_FLOAT_struct* BD_TIME = new BOARD_DATA_struct::BD_FLOAT_struct();
+	BD_TIME->NAME = TIME_NAME;
+	BD_TIME->MAX = TIME_MAX;
+	BD_TIME->MIN = TIME_MIN;
+	mDataBoard.allBoardData_float.push_back(BD_TIME);
+}
+
+void CDataDriven::InitPlayerListStruct()
+{
+	PLAYERS_DATA_struct::PD_struct* PD_NORMAL = new PLAYERS_DATA_struct::PD_struct();
+	PD_NORMAL->NAME = NORMAL_NAME;
+	mDataPlayers.allPlayersData.push_back(PD_NORMAL);
+
+	PLAYERS_DATA_struct::PD_struct* PD_INMORTAL = new PLAYERS_DATA_struct::PD_struct();
+	PD_INMORTAL->NAME = INMORTAL_NAME;
+	mDataPlayers.allPlayersData.push_back(PD_INMORTAL);
+}
+
 // BOARD FORMAT
 /*
 	rows { 24 }
@@ -32,75 +70,52 @@ bool CDataDriven::ReadBoardFile(std::string filename)
 	if (myfile.is_open())
 	{
 		std::string line;
-		std::string strr = "rows";
-		std::string strc = "cols";
-		std::string stri = "iter";
-		std::string strt = "time";
 
-		bool bR = false;
-		bool bC = false;
-		bool bI = false;
-		bool bT = false;
-
+		// while not eof
 		while (getline(myfile, line, ' '))
 		{
-			if (line.find(strr) != std::string::npos)
+			for (BOARD_DATA_struct::BD_INT_struct* bdi : mDataBoard.allBoardData_int)
 			{
-				myfile.ignore(256, '{');
-				while (!std::isdigit(myfile.peek()))
+				if (line.find(bdi->NAME) != std::string::npos)
 				{
-					myfile.ignore(1);
-				}	
-				getline(myfile, line, ' ');
+					myfile.ignore(256, '{');
+
+					// keep reading until number
+					while (!std::isdigit(myfile.peek()))
+					{
+						myfile.ignore(1);
+					}
+					getline(myfile, line, ' ');
 #ifdef DRAWDEBUGINFO
-				std::cout << "read rows: " << line << '\n';
+					std::cout << "read " << bdi->NAME << " : " << line << '\n';
 #endif		
-				mDataBoard.ddRows = std::stoi(line);
-				myfile.ignore(256, '\n');
+					bdi->dd = std::stoi(line);
+					myfile.ignore(256, '\n');
+					break;
+				}
 			}
-			else if (line.find(strc) != std::string::npos)
+
+			for (BOARD_DATA_struct::BD_FLOAT_struct* bdf : mDataBoard.allBoardData_float)
 			{
-				myfile.ignore(256, '{');
-				while (!std::isdigit(myfile.peek()))
+				if (line.find(bdf->NAME) != std::string::npos)
 				{
-					myfile.ignore(1);
-				}	
-				getline(myfile, line, ' ');
+					myfile.ignore(256, '{');
+					int p = myfile.peek();
+
+					// keep reading until number or '.'
+					while (!std::isdigit(p) && p != '.')
+					{
+						myfile.ignore(1);
+						p = myfile.peek();
+					}
+					getline(myfile, line, ' ');
 #ifdef DRAWDEBUGINFO
-				std::cout << "read cols: " << line << '\n';
+					std::cout << "read " << bdf->NAME << " : " << line << '\n';
 #endif		
-				mDataBoard.ddCols = std::stoi(line);
-				myfile.ignore(256, '\n');
-			}
-			else if (line.find(stri) != std::string::npos)
-			{
-				myfile.ignore(256, '{');
-				while (!std::isdigit(myfile.peek()))
-				{
-					myfile.ignore(1);
-				}	
-				getline(myfile, line, ' ');
-#ifdef DRAWDEBUGINFO
-				std::cout << "read cols: " << line << '\n';
-#endif		
-				mDataBoard.ddIter = std::stoi(line);
-				myfile.ignore(256, '\n');
-			}
-			else if (line.find(strt) != std::string::npos)
-			{
-				myfile.ignore(256, '{');
-				int p = myfile.peek();
-				while (!std::isdigit(p) && p != '.')
-				{
-					myfile.ignore(1);
-					p = myfile.peek();
-				}		
-				getline(myfile, line, ' ');
-#ifdef DRAWDEBUGINFO
-				std::cout << "read time: " << line << '\n';
-#endif	
-				mDataBoard.ddTime = std::stof(line);
-				myfile.ignore(256, '\n');
+					bdf->dd = std::stof(line);
+					myfile.ignore(256, '\n');
+					break;
+				}
 			}
 		}
 		myfile.close();
@@ -145,97 +160,61 @@ bool CDataDriven::ReadPlayersFile(std::string filename)
 	if (myfile.is_open())
 	{
 		std::string line;
-		std::string strn = "normal";
-		std::string stri = "inmortal";
 
-		bool bKeepReadingNormal = true;
-		bool bKeepReadingInmortal = true;
+		bool bKeepReading = true;
+		int x = -1; int y = -1;
 
-		int x = -1;
-		int y = -1;
-
+		// while not eof
 		while (getline(myfile, line, ' '))
 		{
-			if (line.find(strn) != std::string::npos)
+			for (PLAYERS_DATA_struct::PD_struct* pd : mDataPlayers.allPlayersData)
 			{
-				myfile.ignore(256, '{');
-				while (bKeepReadingNormal)
+				if (line.find(pd->NAME) != std::string::npos)
 				{
-					while (bKeepReadingNormal && (x == -1 || y == -1))
+					myfile.ignore(256, '{');
+					bKeepReading = true;
+
+					// while reading a type of player
+					while (bKeepReading)
 					{
-						int c = myfile.peek();
-						while (bKeepReadingNormal && !std::isdigit(c))
+						// while reading a pair ( x , y )
+						while (bKeepReading && (x == -1 || y == -1))
 						{
-							myfile.ignore(1);
-							c = myfile.peek();
-							if (c == '}')
+							int c = myfile.peek();
+
+							// keep reading until number or '}'
+							while (bKeepReading && !std::isdigit(c))
 							{
-								bKeepReadingNormal = false;
+								myfile.ignore(1);
+								c = myfile.peek();
+								if (c == '}')
+								{
+									bKeepReading = false;
+								}
+							}
+							if (bKeepReading)
+							{
+								getline(myfile, line, ' ');
+								if (x == -1)
+								{
+									x = std::stoi(line);
+								}
+								else if (y == -1)
+								{
+									y = std::stoi(line);
+								}
 							}
 						}
-						if (bKeepReadingNormal)
+						if (bKeepReading)
 						{
-							getline(myfile, line, ' ');
-							if (x == -1)
-							{
-								x = std::stoi(line);
-							}
-							else if (y == -1)
-							{
-								y = std::stoi(line);
-							}
-						}
-					}
-					if (bKeepReadingNormal)
-					{
 #ifdef DRAWDEBUGINFO
-						std::cout << "read normal: ( " << x << " , " << y << " )\n";
+							std::cout << "read " << pd.NAME << " : ( " << x << " , " << y << " )\n";
 #endif				
-						mDataPlayers.listInitPosNormal.push_back(new CVec2D(x, y));
-						x = -1;
-						y = -1;
-					}
-				}
-			}
-			else if (line.find(stri) != std::string::npos)
-			{
-				myfile.ignore(256, '{');
-				while (bKeepReadingInmortal)
-				{
-					while (bKeepReadingInmortal && (x == -1 || y == -1))
-					{
-						int c = myfile.peek();
-						while (bKeepReadingInmortal && !std::isdigit(c))
-						{
-							myfile.ignore(1);
-							c = myfile.peek();
-							if (c == '}')
-							{
-								bKeepReadingInmortal = false;
-							}
-						}
-						if (bKeepReadingInmortal)
-						{
-							getline(myfile, line, ' ');
-							if (x == -1)
-							{
-								x = std::stoi(line);
-							}
-							else if (y == -1)
-							{
-								y = std::stoi(line);
-							}
+							pd->listInitPos.push_back(new CVec2D(x, y));
+							x = -1; y = -1;
 						}
 					}
-					if (bKeepReadingInmortal)
-					{
-#ifdef DRAWDEBUGINFO
-						std::cout << "read inmortal: ( " << x << " , " << y << " )\n";
-#endif				
-						mDataPlayers.listInitPosInmortal.push_back(new CVec2D(x, y));
-						x = -1;
-						y = -1;
-					}
+					break;
 				}
 			}
 		}
@@ -255,32 +234,76 @@ bool CDataDriven::ReadPlayersFile(std::string filename)
 
 int CDataDriven::GetDataRows()
 {
-	return mDataBoard.ddRows;
+	for (BOARD_DATA_struct::BD_INT_struct* bdi : mDataBoard.allBoardData_int)
+	{
+		if (bdi->NAME == ROWS_NAME)
+		{
+			return bdi->dd;
+		}
+	}
+	return 0;
 }
 
 int CDataDriven::GetDataCols()
 {
-	return mDataBoard.ddCols;
+	for (BOARD_DATA_struct::BD_INT_struct* bdi : mDataBoard.allBoardData_int)
+	{
+		if (bdi->NAME == COLUMNS_NAME)
+		{
+			return bdi->dd;
+		}
+	}
+	return 0;
 }
 
 int CDataDriven::GetDataIter()
 {
-	return mDataBoard.ddIter;
+	for (BOARD_DATA_struct::BD_INT_struct* bdi : mDataBoard.allBoardData_int)
+	{
+		if (bdi->NAME == ITERATIONS_NAME)
+		{
+			return bdi->dd;
+		}
+	}
+	return 0;
 }
 
 float CDataDriven::GetDataTime()
 {
-	return mDataBoard.ddTime;
+	for (BOARD_DATA_struct::BD_FLOAT_struct* bdf : mDataBoard.allBoardData_float)
+	{
+		if (bdf->NAME == TIME_NAME)
+		{
+			return bdf->dd;
+		}
+	}
+	return 0.0f;
 }
 
 std::list<CVec2D*> CDataDriven::GetDataPlayersNormal()
 {
-	return mDataPlayers.listInitPosNormal;
+	std::list<CVec2D*> l;
+	for (PLAYERS_DATA_struct::PD_struct* pd: mDataPlayers.allPlayersData)
+	{
+		if (pd->NAME == NORMAL_NAME)
+		{
+			l = pd->listInitPos;
+		}
+	}
+	return l;
 }
 
 std::list<CVec2D*> CDataDriven::GetDataPlayersInmortal()
 {
-	return mDataPlayers.listInitPosInmortal;
+	std::list<CVec2D*> l;
+	for (PLAYERS_DATA_struct::PD_struct* pd : mDataPlayers.allPlayersData)
+	{
+		if (pd->NAME == INMORTAL_NAME)
+		{
+			l = pd->listInitPos;
+		}
+	}
+	return l;
 }
 
 std::string CDataDriven::AskFileName(FILETYPES filetype)

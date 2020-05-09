@@ -15,6 +15,9 @@ void CGameManager::Init()
 {
 	bIsGameOver = true;
 	mConsole = GetConsoleWindow();
+
+	mData = new CDataDriven();
+
 	if (InitInput())
 	{
 		// time needs to be in ms
@@ -111,17 +114,16 @@ void CGameManager::Shutdown()
 
 bool CGameManager::InitInput()
 {
-	mData = new CDataDriven();
-
 	// BOARD DATA
 	std::string boardFilename = CDataDriven::AskFileName(CDataDriven::FILETYPES::BOARD);
+	mData->InitBoardStruct();
 	if (boardFilename != "random")
 	{
 		if (!mData->ReadBoardFile(boardFilename)) { return false; }
 		int inputRows = mData->GetDataRows();
 		if (!_checkNumRows(inputRows))
 		{
-			std::cout << "ERROR: rows parameter [ " << inputRows << " ] out of range [ " << MINROWS << " , " << MAXROWS << "]\n";
+			std::cout << "ERROR: rows parameter [ " << inputRows << " ] out of range [ " << ROWS_MIN << " , " << ROWS_MAX << "]\n";
 			return false;
 		}
 		mRows = inputRows;
@@ -129,7 +131,7 @@ bool CGameManager::InitInput()
 		int inputCols = mData->GetDataCols();
 		if (!_checkNumCols(inputCols))
 		{
-			std::cout << "ERROR: columns parameter [ " << inputCols << " ] out of range [ " << MINCOLS << " , " << MAXCOLS << "]\n";
+			std::cout << "ERROR: columns parameter [ " << inputCols << " ] out of range [ " << COLUMNS_MIN << " , " << COLUMNS_MAX << "]\n";
 			return false;
 		}
 		mColumns = inputCols;
@@ -137,7 +139,7 @@ bool CGameManager::InitInput()
 		int inputIter = mData->GetDataIter();
 		if (!_checkNumIter(inputIter))
 		{
-			std::cout << "ERROR: iterations parameter [ " << inputIter << " ] out of range [ " << MINITER << " , " << MAXITER << "]\n";
+			std::cout << "ERROR: iterations parameter [ " << inputIter << " ] out of range [ " << ITERATIONS_MIN << " , " << ITERATIONS_MAX << "]\n";
 			return false;
 		}
 
@@ -146,7 +148,7 @@ bool CGameManager::InitInput()
 		float inputTime = mData->GetDataTime();
 		if (!_checkTimeUpdates(inputTime))
 		{
-			std::cout << "ERROR: time between simulation steps parameter [ " << inputTime << " ] out of range [ " << MINTIME << " , " << MAXTIME << "]\n";
+			std::cout << "ERROR: time between simulation steps parameter [ " << inputTime << " ] out of range [ " << TIME_MIN << " , " << TIME_MAX << "]\n";
 			return false;
 		}
 		mTimeBetweenSteps = inputTime;
@@ -158,6 +160,7 @@ bool CGameManager::InitInput()
 
 	// PLAYER LIST DATA
 	std::string playerListFilename = CDataDriven::AskFileName(CDataDriven::FILETYPES::PLAYERLIST);
+	mData->InitPlayerListStruct();
 	if (playerListFilename != "random")
 	{
 		if (!mData->ReadPlayersFile(playerListFilename)) { return false; }
@@ -198,22 +201,22 @@ void CGameManager::_testInit()
 
 bool CGameManager::_checkNumRows(int nRows)
 {
-	return (nRows <= MAXROWS && nRows >= MINROWS);
+	return (nRows <= ROWS_MAX && nRows >= ROWS_MIN);
 }
 
 bool CGameManager::_checkNumCols(int nCols)
 {
-	return (nCols <= MAXCOLS && nCols >= MINCOLS);
+	return (nCols <= COLUMNS_MAX && nCols >= COLUMNS_MIN);
 }
 
 bool CGameManager::_checkNumIter(int nIter)
 {
-	return (nIter <= MAXITER && nIter >= MINITER);
+	return (nIter <= ITERATIONS_MAX && nIter >= ITERATIONS_MIN);
 }
 
 bool CGameManager::_checkTimeUpdates(float timeUpdates)
 {
-	return (timeUpdates <= MAXTIME && timeUpdates >= MINTIME);
+	return (timeUpdates <= TIME_MAX && timeUpdates >= TIME_MIN);
 }
 
 bool CGameManager::CreateBoard()

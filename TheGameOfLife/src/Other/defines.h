@@ -7,17 +7,26 @@
 
 // BOARD DATA ///////////////////////////////////////////////////////////////
 
-#define MAXROWS 40
-#define MINROWS 6
+static std::string ROWS_NAME = "rows";
+static int ROWS_MAX = 40;
+static int ROWS_MIN = 6;
 
-#define MAXCOLS 60
-#define MINCOLS 14
+static std::string COLUMNS_NAME = "cols";
+static int COLUMNS_MAX = 60;
+static int COLUMNS_MIN = 14;
 
-#define MAXITER 99999
-#define MINITER 0
+static std::string ITERATIONS_NAME = "iter";
+static int ITERATIONS_MAX = 99999;
+static int ITERATIONS_MIN = 0;
 
-#define MAXTIME 60
-#define MINTIME .1
+static std::string TIME_NAME = "time";
+static float TIME_MAX = 60.0f;
+static float TIME_MIN = .1f;
+
+// PLAYER TYPES ////////////////////////////////////////////////////////////////////////
+
+static std::string NORMAL_NAME = "normal";
+static std::string INMORTAL_NAME = "inmortal";
 
 // GENERAL ///////////////////////////////////////////////////////////////
 
@@ -30,7 +39,7 @@ static bool BUILD = false;
 #define CLEANSCREEN
 //#define DRAWDEBUGINFO
 
-//////////////////////////////////////////////////////////////////////////
+///
 
 
 /// CANNOT EDIT ///
@@ -47,4 +56,4 @@ static std::string DEFAULTFILENAMEPLAYERLIST = "players";
 #define DRAWPLAYER_NORMALCHAR 'O'
 #define DRAWPLAYER_INMORTALCHAR '@'
 
-//////////////////////////////////////////////////////////////////////////
+///

@@ -13,18 +13,6 @@
 class CDataDriven
 {
 public:
-	CDataDriven();
-	~CDataDriven();
-
-	void InitBoardStruct();
-	void InitPlayerListStruct();
-
-	enum FILETYPES
-	{
-		BOARD,
-		PLAYERLIST
-	};
-
 	struct BOARD_DATA_struct
 	{
 		struct BD_INT_struct
@@ -58,6 +46,13 @@ public:
 		std::list<PD_struct*> allPlayersData;
 	};
 
+	CDataDriven() {}
+	~CDataDriven() {}
+
+	void InitBoardStruct();
+	void InitPlayerListStruct();
+	void InitRandomBoard();
+	void InitRandomPlayers();
 	bool ReadBoardFile(std::string filename);
 	bool ReadPlayersFile(std::string filename);
 
@@ -68,7 +63,7 @@ public:
 	std::list<CVec2D*> GetDataPlayersNormal();
 	std::list<CVec2D*> GetDataPlayersInmortal();
 
-	static std::string AskFileName(FILETYPES filetype = FILETYPES::BOARD);
+	static std::string AskFileName(std::string whatToLoad = BOARDNAME);
 
 protected:
 

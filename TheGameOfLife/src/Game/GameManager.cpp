@@ -21,7 +21,7 @@ void CGameManager::Init()
 	if (InitInput())
 	{
 		// time needs to be in ms
-		mTimeBetweenSteps *= 1000;
+		mTime *= 1000;
 		ResizeScreen();
 
 		if (CreateBoard())
@@ -46,7 +46,7 @@ void CGameManager::Init()
 
 void CGameManager::Update(float dTime)
 {
-	if (mInnerIterations >= mMaxIterations ||
+	if (mInnerIterations >= mIterations ||
 		mBoard->GetPopulation() == 0 ||
 		mBoard->GetPopulation() == mBoard->GetSize() ||
 		mBoard->IsStabilized())
@@ -57,7 +57,7 @@ void CGameManager::Update(float dTime)
 	else
 	{
 		mInnerTimer += dTime;
-		if (mInnerTimer >= mTimeBetweenSteps)
+		if (mInnerTimer >= mTime)
 		{
 			mInnerTimer = 0.0f;
 			++mInnerIterations;
@@ -102,7 +102,9 @@ void CGameManager::Draw()
 				std::cout << "\n YOU SURVIVED THE SIMULATION!\n";
 			}
 		}
-		std::cout << " ITERATIONS - " << mInnerIterations << " -" << " POPULATION - " << mBoard->GetPopulation() << " -\n";
+		std::cout << " TIME BETWEEN STEPS - " << std::setprecision(4) << (mTime / 1000) << " -\n";
+		std::cout << " ITERATIONS - " << mInnerIterations << " / " << mIterations << " -\n";
+		std::cout << " POPULATION - " << mBoard->GetPopulation() << " -\n";
 	}
 #endif
 }
@@ -115,61 +117,89 @@ void CGameManager::Shutdown()
 bool CGameManager::InitInput()
 {
 	// BOARD DATA
-	std::string boardFilename = CDataDriven::AskFileName(CDataDriven::FILETYPES::BOARD);
+	std::string boardFilename = CDataDriven::AskFileName(BOARDNAME);
 	mData->InitBoardStruct();
-	if (boardFilename != "random")
+	if (boardFilename != RANDOMNAME)
 	{
 		if (!mData->ReadBoardFile(boardFilename)) { return false; }
-		int inputRows = mData->GetDataRows();
-		if (!_checkNumRows(inputRows))
-		{
-			std::cout << "ERROR: rows parameter [ " << inputRows << " ] out of range [ " << ROWS_MIN << " , " << ROWS_MAX << "]\n";
-			return false;
-		}
-		mRows = inputRows;
-
-		int inputCols = mData->GetDataCols();
-		if (!_checkNumCols(inputCols))
-		{
-			std::cout << "ERROR: columns parameter [ " << inputCols << " ] out of range [ " << COLUMNS_MIN << " , " << COLUMNS_MAX << "]\n";
-			return false;
-		}
-		mColumns = inputCols;
-
-		int inputIter = mData->GetDataIter();
-		if (!_checkNumIter(inputIter))
-		{
-			std::cout << "ERROR: iterations parameter [ " << inputIter << " ] out of range [ " << ITERATIONS_MIN << " , " << ITERATIONS_MAX << "]\n";
-			return false;
-		}
-
-		mMaxIterations = inputIter;
-
-		float inputTime = mData->GetDataTime();
-		if (!_checkTimeUpdates(inputTime))
-		{
-			std::cout << "ERROR: time between simulation steps parameter [ " << inputTime << " ] out of range [ " << TIME_MIN << " , " << TIME_MAX << "]\n";
-			return false;
-		}
-		mTimeBetweenSteps = inputTime;
+		if (!CheckBoardData()) { return false; }
 	}
 	else
 	{
-		// TODO: random board
+		mData->InitRandomBoard();
+		mRows = mData->GetDataRows();
+		mColumns = mData->GetDataCols();
+		mIterations = mData->GetDataIter();
+		mTime = mData->GetDataTime();
 	}
 
 	// PLAYER LIST DATA
-	std::string playerListFilename = CDataDriven::AskFileName(CDataDriven::FILETYPES::PLAYERLIST);
+	std::string playerListFilename = CDataDriven::AskFileName(PLAYERLISTNAME);
 	mData->InitPlayerListStruct();
-	if (playerListFilename != "random")
+	if (playerListFilename != RANDOMNAME)
 	{
 		if (!mData->ReadPlayersFile(playerListFilename)) { return false; }
 	}
 	else
 	{
-		// TODO: random board
+		mData->InitRandomPlayers();
 	}
 	return true;
+}
+
+bool CGameManager::GetIsGameOver()
+{
+	return bIsGameOver;
+}
+
+bool CGameManager::CheckBoardData()
+{
+	int inputRows = mData->GetDataRows();
+	if (!_checkNumRows(inputRows))
+	{
+		std::cout << "ERROR: rows parameter [ " << inputRows << " ] out of range [ " << ROWS_MIN << " , " << ROWS_MAX << "]\n";
+		return false;
+	}
+	mRows = inputRows;
+
+	int inputCols = mData->GetDataCols();
+	if (!_checkNumCols(inputCols))
+	{
+		std::cout << "ERROR: columns parameter [ " << inputCols << " ] out of range [ " << COLUMNS_MIN << " , " << COLUMNS_MAX << "]\n";
+		return false;
+	}
+	mColumns = inputCols;
+
+	int inputIter = mData->GetDataIter();
+	if (!_checkNumIter(inputIter))
+	{
+		std::cout << "ERROR: iterations parameter [ " << inputIter << " ] out of range [ " << ITERATIONS_MIN << " , " << ITERATIONS_MAX << "]\n";
+		return false;
+	}
+
+	mIterations = inputIter;
+
+	float inputTime = mData->GetDataTime();
+	if (!_checkTimeUpdates(inputTime))
+	{
+		std::cout << "ERROR: time between simulation steps parameter [ " << inputTime << " ] out of range [ " << TIME_MIN << " , " << TIME_MAX << "]\n";
+		return false;
+	}
+	mTime = inputTime;
+
+	return true;
+}
+
+bool CGameManager::CreateBoard()
+{
+	mBoard = new CBoard(mRows, mColumns);
+	return (mBoard != nullptr);
+}
+
+void CGameManager::FillBoard()
+{
+	mBoard->AddInitPlayers(mData->GetDataPlayersNormal(), CPlayer::PLAYER_TYPE::NORMAL);
+	mBoard->AddInitPlayers(mData->GetDataPlayersInmortal(), CPlayer::PLAYER_TYPE::INMORTAL);
 }
 
 void CGameManager::ResizeScreen()
@@ -181,7 +211,7 @@ void CGameManager::ResizeScreen()
 	// resize window to desire size
 
 	// TODO: set good size
-	MoveWindow(mConsole, r.left, r.top, (mColumns * 2) * 10, ((mRows + 5) * 2) * 10, TRUE);
+	MoveWindow(mConsole, r.left, r.top, (mColumns * 2) * 10, ((mRows + 7) * 2) * 10, TRUE);
 
 	// disable manual resize
 	SetWindowLong(mConsole, GWL_STYLE, 
@@ -192,6 +222,11 @@ void CGameManager::ResizeScreen()
 	// disable maximize button
 	SetWindowLong(mConsole, GWL_STYLE,
 		GetWindowLong(mConsole, GWL_STYLE) & ~WS_MAXIMIZEBOX);
+}
+
+void CGameManager::WaitCloseConsole()
+{
+	while (mConsole != NULL);
 }
 
 void CGameManager::_testInit()
@@ -217,26 +252,4 @@ bool CGameManager::_checkNumIter(int nIter)
 bool CGameManager::_checkTimeUpdates(float timeUpdates)
 {
 	return (timeUpdates <= TIME_MAX && timeUpdates >= TIME_MIN);
-}
-
-bool CGameManager::CreateBoard()
-{
-	mBoard = new CBoard(mRows, mColumns);
-	return (mBoard != nullptr);
-}
-
-void CGameManager::FillBoard()
-{
-	mBoard->AddInitPlayers(mData->GetDataPlayersNormal(), CPlayer::PLAYER_TYPE::NORMAL);
-	mBoard->AddInitPlayers(mData->GetDataPlayersInmortal(), CPlayer::PLAYER_TYPE::INMORTAL);
-}
-
-bool CGameManager::GetIsGameOver()
-{
-	return bIsGameOver;
-}
-
-void CGameManager::WaitCloseConsole()
-{
-	while (mConsole != NULL);
 }

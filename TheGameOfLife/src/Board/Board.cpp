@@ -28,7 +28,14 @@ void CBoard::AddInitPlayers(std::list<CVec2D*> listInitPos, CPlayer::PLAYER_TYPE
 {
 	for (std::list<CVec2D*>::iterator it = listInitPos.begin(); it != listInitPos.end(); ++it)
 	{
-		if (AddPlayerToPos((*it), pjType)) { _getCellOnPos(CVec2D::Pos2DToPos((*it), mCols))->SetIsInitPos(); }
+		if (AddPlayerToPos((*it), pjType))
+		{ 
+			CCell* c = _getCellOnPos(CVec2D::Pos2DToPos((*it), mCols));
+			if (c)
+			{
+				c->SetIsInitPos();
+			}
+		}
 	}
 }
 
@@ -45,26 +52,34 @@ void CBoard::Update(float dTime)
 {
 	for (int pos = 0; pos < GetSize(); ++pos)
 	{
-		_getCellOnPos(pos)->Update(dTime);
+		CCell* c = _getCellOnPos(pos);
+		if (c)
+		{
+			c->Update(dTime);
+		}
 	}
 	bIsStabilized = true;
 	for (int pos = 0; pos < GetSize(); ++pos)
 	{
 		int numPjNearby = _getNumPlayersNearby(pos);
-		if (numPjNearby == 3)
+		CCell* c = _getCellOnPos(pos);
+		if (c)
 		{
-			// no need to check this here, but reduces operations when no needed
-			if (_getCellOnPos(pos)->IsEmpty())
+			if (numPjNearby == 3)
 			{
-				if (AddPlayerToPos(CVec2D::PosToPos2D(pos, mCols))) { bIsStabilized = false; }
+				// no need to check this here, but reduces operations when no needed
+				if (c->IsEmpty())
+				{
+					if (AddPlayerToPos(CVec2D::PosToPos2D(pos, mCols))) { bIsStabilized = false; }
+				}
 			}
-		}
-		else if (numPjNearby > 3 || numPjNearby < 2)
-		{
-			// no need to check this here, but reduces operations when no needed
-			if (!_getCellOnPos(pos)->IsEmpty())
+			else if (numPjNearby > 3 || numPjNearby < 2)
 			{
-				if (RemovePlayerFromPos(CVec2D::PosToPos2D(pos, mCols))) { bIsStabilized = false; }
+				// no need to check this here, but reduces operations when no needed
+				if (!c->IsEmpty())
+				{
+					if (RemovePlayerFromPos(CVec2D::PosToPos2D(pos, mCols))) { bIsStabilized = false; }
+				}
 			}
 		}
 	}
@@ -139,7 +154,11 @@ std::list<CCell*> CBoard::_getCellsNearby(CVec2D * pos)
 				CVec2D* nearbyPos = new CVec2D(i + pos->GetX(), j + pos->GetY());
 				if (_isPosInsideBoard(nearbyPos))
 				{
-					listCellsNearby.push_back(_getCellOnPos(CVec2D::Pos2DToPos(nearbyPos, mCols)));
+					CCell* c = _getCellOnPos(CVec2D::Pos2DToPos(nearbyPos, mCols));
+					if (c)
+					{
+						listCellsNearby.push_back(c);
+					}
 				}
 			}
 		}
@@ -149,12 +168,23 @@ std::list<CCell*> CBoard::_getCellsNearby(CVec2D * pos)
 
 CCell* CBoard::_getCellOnPos(int pos)
 {
+	int i = 0;
+	for (std::list<CCell*>::iterator it = mBoard.begin(); it != mBoard.end(); ++it, ++i)
+	{
+		if (i == pos)
+		{
+			return (*it);
+		}
+	}
+	return nullptr;
+	/*
 	std::list<CCell*>::iterator it = mBoard.begin();
 	for (int i = 0; i < pos; ++i)
 	{
 		++it;
 	}
 	return (*it);
+	*/
 }
 
 bool CBoard::_isPosInsideBoard(CVec2D* pos)
@@ -167,7 +197,8 @@ bool CBoard::_isPosInsideBoard(CVec2D* pos)
 
 bool CBoard::_addPlayerToPos(int pos, CPlayer::PLAYER_TYPE pjType)
 {
-	if (_getCellOnPos(pos)->AddPlayerToCell(pjType))
+	CCell* c = _getCellOnPos(pos);
+	if (c && c->AddPlayerToCell(pjType))
 	{
 		++mPopulation;
 		return true;
@@ -177,7 +208,8 @@ bool CBoard::_addPlayerToPos(int pos, CPlayer::PLAYER_TYPE pjType)
 
 bool CBoard::_removePlayerFromPos(int pos)
 {
-	if (_getCellOnPos(pos)->RemovePlayerFromCell())
+	CCell* c = _getCellOnPos(pos);
+	if (c && c->RemovePlayerFromCell())
 	{
 		--mPopulation;
 		return true;
@@ -187,7 +219,12 @@ bool CBoard::_removePlayerFromPos(int pos)
 
 CPlayer * CBoard::_getPlayerOnPos(int pos)
 {
-	return _getCellOnPos(pos)->GetPlayerFromCell();
+	CCell* c = _getCellOnPos(pos);
+	if (c)
+	{
+		return c->GetPlayerFromCell();
+	}
+	return nullptr;
 }
 
 int CBoard::_getNumPlayersNearby(int pos)

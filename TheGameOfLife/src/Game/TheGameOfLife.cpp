@@ -9,6 +9,7 @@
 #include "defines.h"
 #include <iostream>
 #include <ctime>			// std::clock()
+#include <cstdlib>			// srand
 #include "GameManager.h"
 
 void _init();
@@ -31,6 +32,9 @@ int main()
 
 void _init()
 {
+	// random seed
+	srand(static_cast <unsigned> (time(0)));
+
 	// times
 	postFrame = static_cast<float>(std::clock());
 	preFrame = 0;

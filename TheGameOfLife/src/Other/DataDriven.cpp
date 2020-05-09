@@ -1,16 +1,6 @@
 
 #include "DataDriven.h"
 
-CDataDriven::CDataDriven()
-{
-
-}
-
-CDataDriven::~CDataDriven()
-{
-
-}
-
 void CDataDriven::InitBoardStruct()
 {
 	BOARD_DATA_struct::BD_INT_struct* BD_ROWS = new BOARD_DATA_struct::BD_INT_struct();
@@ -49,6 +39,77 @@ void CDataDriven::InitPlayerListStruct()
 	mDataPlayers.allPlayersData.push_back(PD_INMORTAL);
 }
 
+void CDataDriven::InitRandomBoard()
+{
+	for (BOARD_DATA_struct::BD_INT_struct* bdi : mDataBoard.allBoardData_int)
+	{
+		std::string n = bdi->NAME;
+		if (n == ROWS_NAME && !RANDOMSIZE)
+		{
+			bdi->dd = ROWS_DEF;
+		}
+		else if (n == COLUMNS_NAME && !RANDOMSIZE)
+		{
+			bdi->dd = COLUMNSS_DEF;
+		}
+		else if (n == ITERATIONS_NAME && !RANDOMITER)
+		{
+			bdi->dd = ITERATIONS_DEF;
+		}
+		else
+		{
+			bdi->dd = (rand() % (bdi->MAX - bdi->MIN + 1)) + bdi->MIN;
+		}
+	}
+
+	for (BOARD_DATA_struct::BD_FLOAT_struct* bdf : mDataBoard.allBoardData_float)
+	{
+		if (bdf->NAME == TIME_NAME && !RANDOMTIME)
+		{
+			bdf->dd = TIME_DEF;
+		}
+		else
+		{
+			bdf->dd = (static_cast <float> (rand()) / (static_cast <float> (RAND_MAX / (bdf->MAX - bdf->MIN)))) + bdf->MIN;
+		}
+	}
+}
+
+void CDataDriven::InitRandomPlayers()
+{
+	int nR = 0;	int nC = 0;
+	for (BOARD_DATA_struct::BD_INT_struct* bdi : mDataBoard.allBoardData_int)
+	{
+		std::string n = bdi->NAME;
+		if (n == ROWS_NAME)
+		{
+			nR = bdi->dd;
+		}
+		else if (n == COLUMNS_NAME)
+		{
+			nC = bdi->dd;
+		}
+	}
+	for (int i = 0; i < nR; ++i)
+	{
+		for (int j = 0; j < nC; ++j)
+		{
+			int rnd = (rand() % 100) + 1;	// 1 - 100
+			for (PLAYERS_DATA_struct::PD_struct* pd : mDataPlayers.allPlayersData)
+			{
+				if ((pd->NAME == INMORTAL_NAME) && (rnd <= INMORTAL_RANDOMPROB)
+					||
+					(pd->NAME == NORMAL_NAME) && (rnd > INMORTAL_RANDOMPROB)
+					&& (rnd <= (NORMAL_RANDOMPROB + INMORTAL_RANDOMPROB)))
+				{
+					pd->listInitPos.push_back(new CVec2D(i, j));
+					break;
+				}
+			}
+		}
+	}
+}
+
 // BOARD FORMAT
 /*
 	rows { 24 }
@@ -63,7 +124,7 @@ bool CDataDriven::ReadBoardFile(std::string filename)
 
 	std::string fullpath = DATAPATH + filename;
 #ifdef DRAWDEBUGINFO
-	std::cout << "Board data driven full path: " << fullpath << "\n";
+	std::cout << BOARDNAME << " data driven full path: " << fullpath << "\n";
 #endif
 
 	std::ifstream myfile(fullpath);
@@ -78,7 +139,7 @@ bool CDataDriven::ReadBoardFile(std::string filename)
 			{
 				if (line.find(bdi->NAME) != std::string::npos)
 				{
-					myfile.ignore(256, '{');
+					myfile.ignore(256, SEPARATOR_OPEN);
 
 					// keep reading until number
 					while (!std::isdigit(myfile.peek()))
@@ -99,11 +160,11 @@ bool CDataDriven::ReadBoardFile(std::string filename)
 			{
 				if (line.find(bdf->NAME) != std::string::npos)
 				{
-					myfile.ignore(256, '{');
+					myfile.ignore(256, SEPARATOR_OPEN);
 					int p = myfile.peek();
 
-					// keep reading until number or '.'
-					while (!std::isdigit(p) && p != '.')
+					// keep reading until number or decimal separator
+					while (!std::isdigit(p) && p != DECIMALSEPARATOR)
 					{
 						myfile.ignore(1);
 						p = myfile.peek();
@@ -153,7 +214,7 @@ bool CDataDriven::ReadPlayersFile(std::string filename)
 
 	std::string fullpath = DATAPATH + filename;
 #ifdef DRAWDEBUGINFO
-	std::cout << "Players data driven full path: " << fullpath << "\n";
+	std::cout << PLAYERLISTNAME << " data driven full path: " << fullpath << "\n";
 #endif
 
 	std::ifstream myfile(fullpath);
@@ -171,7 +232,7 @@ bool CDataDriven::ReadPlayersFile(std::string filename)
 			{
 				if (line.find(pd->NAME) != std::string::npos)
 				{
-					myfile.ignore(256, '{');
+					myfile.ignore(256, SEPARATOR_OPEN);
 					bKeepReading = true;
 
 					// while reading a type of player
@@ -187,7 +248,7 @@ bool CDataDriven::ReadPlayersFile(std::string filename)
 							{
 								myfile.ignore(1);
 								c = myfile.peek();
-								if (c == '}')
+								if (c == SEPARATOR_CLOSE)
 								{
 									bKeepReading = false;
 								}
@@ -287,7 +348,7 @@ std::list<CVec2D*> CDataDriven::GetDataPlayersNormal()
 	{
 		if (pd->NAME == NORMAL_NAME)
 		{
-			l = pd->listInitPos;
+			return pd->listInitPos;
 		}
 	}
 	return l;
@@ -300,39 +361,40 @@ std::list<CVec2D*> CDataDriven::GetDataPlayersInmortal()
 	{
 		if (pd->NAME == INMORTAL_NAME)
 		{
-			l = pd->listInitPos;
+			return pd->listInitPos;
 		}
 	}
 	return l;
 }
 
-std::string CDataDriven::AskFileName(FILETYPES filetype)
+std::string CDataDriven::AskFileName(std::string whatToLoad)
 {
 	std::string filename;
-	std::string whatToLoad;
 	std::string filenameDef;
-	if (filetype == FILETYPES::BOARD)
+
+	if (whatToLoad == BOARDNAME)
 	{
-		whatToLoad = "Board";
 		filenameDef = DEFAULTFILENAMEBOARD;
 	}
-	else if (filetype == FILETYPES::PLAYERLIST)
+	else if (whatToLoad == PLAYERLISTNAME)
 	{
-		whatToLoad = "Player list";
 		filenameDef = DEFAULTFILENAMEPLAYERLIST;
 	}
+
 	std::cout << "\nIntroduce filename to load: " << whatToLoad << "\n";
-	std::cout << "(Press -R- for random " << whatToLoad << " options)\n";
+	std::cout << "(Press -R- for random " << whatToLoad << " data)\n";
 	std::cout << "(Press -D- for default filename: " << filenameDef << ".txt)\n";
+
 	std::cin >> filename;
 	if (filename == "r" || filename == "R")
 	{
-		return "random";
+		return RANDOMNAME;
 	}
 	if (filename == "d" || filename == "D")
 	{
 		filename = filenameDef;
 	}
-	filename += ".txt";
+	filename += FILEFORMAT;
+
 	return filename;
 }

@@ -4,6 +4,8 @@
 
 /// CAN EDIT ///
 
+static bool BUILD = true;
+
 // RANDOM ////////////////////////////////////////////////////////////////
 
 static std::string RANDOMNAME = "Random";
@@ -20,12 +22,12 @@ static int INMORTAL_RANDOMPROB = 1;
 static std::string BOARDNAME = "Board";
 static std::string ROWS_NAME = "rows";
 static int ROWS_DEF = 12;
-static int ROWS_MAX = 40;
+static int ROWS_MAX = 20;
 static int ROWS_MIN = 6;
 
 static std::string COLUMNS_NAME = "cols";
 static int COLUMNSS_DEF = 28;
-static int COLUMNS_MAX = 60;
+static int COLUMNS_MAX = 40;
 static int COLUMNS_MIN = 14;
 
 static std::string ITERATIONS_NAME = "iter";
@@ -35,7 +37,7 @@ static int ITERATIONS_MIN = 0;
 
 static std::string TIME_NAME = "time";
 static float TIME_DEF = .5f;
-static float TIME_MAX = 60.0f;
+static float TIME_MAX = 30.0f;
 static float TIME_MIN = .1f;
 
 // PLAYER TYPES ////////////////////////////////////////////////////////////////////////
@@ -50,7 +52,6 @@ static std::string INMORTAL_NAME = "inmortal";
 
 // DRAW //////////////////////////////////////////////////////////////////
 
-static bool BUILD = false;
 #define DRAW
 #define CLEANSCREEN
 //#define DRAWDEBUGINFO

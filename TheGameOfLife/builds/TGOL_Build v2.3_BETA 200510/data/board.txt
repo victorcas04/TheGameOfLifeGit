@@ -1,0 +1,4 @@
+rows { 12 }		// [ 6, 20 ] number of board's rows
+cols { 28 }		// [ 14, 40 ] number of board'snum columns
+iter { 10 }		// [ 0, 99999 ] number of simulation's iterations
+time { .5 }		// [ 0.1, 30.0 ] time between each simulation step
